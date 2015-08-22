@@ -33,6 +33,22 @@ function destroyEntity(e) {
 
 function initWorld() {
   // TODO: load tiles
+
+  createTile(point(10, 11), {x: 1, y: 0})
+  createMunster(point(10, 3))
+}
+
+function createMunster(position) {
+  var e = createEntity()
+
+  world.mask[e] =
+    C_POSITION
+    | C_RENDERABLE
+
+  world.position[e] = point(position.x, position.y)
+  world.renderable[e] = renderMunster
+  world.sprite[e] = {x: 0, y: 19}
+
 }
 
 function createTile(position, sprite) {
@@ -56,10 +72,11 @@ var spritesheet
 
 function initCanvas() {
   canvas = document.getElementById('canvas')
-  ctx = canvas.getContext('2d')
-
   canvas.width = 320
   canvas.height = 200
+
+  ctx = canvas.getContext('2d')
+  ctx.imageSmoothingEnabled = false // pixel goodness
 
   spritesheet = document.getElementById('spritesheet')
 }
@@ -105,6 +122,26 @@ function renderTile(e, ctx) {
                 TILE_SIZE, TILE_SIZE)
 
   ctx.restore()
+}
+
+function renderMunster(e, ctx) {
+  if (!(world.mask[e] & C_POSITION))
+    console.error('Trying to render münster without a position')
+
+  var p = world.position[e]
+  var s = world.sprite[e] || defaultSprite
+
+  ctx.save()
+  ctx.translate(p.x, p.y)
+
+  ctx.drawImage(spritesheet,
+                s.x * TILE_SIZE, s.y * TILE_SIZE,
+                TILE_SIZE, TILE_SIZE,
+                p.x, p.y,
+                TILE_SIZE, TILE_SIZE)
+
+  ctx.restore()
+
 }
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
