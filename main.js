@@ -7,7 +7,9 @@ var C_NONE             = 0,
     C_RENDERABLE       = 1 << 2,
     C_INPUT            = 1 << 3,
     C_PHYSICS          = 1 << 4,
-    C_PHYSICS_CONTROLS = 1 << 5
+    C_MOVE             = 1 << 5,
+    C_JUMP             = 1 << 6,
+    C_DOUBLE_JUMP      = 1 << 7
 
 var world = {
   mask: [],
@@ -57,7 +59,8 @@ function createMunster(position) {
     | C_RENDERABLE
     | C_INPUT
     | C_PHYSICS
-    | C_PHYSICS_CONTROLS
+    | C_MOVE
+    | C_JUMP
 
   world.position[e] = point(position.x, position.y)
   world.renderable[e] = renderMunster
@@ -106,8 +109,9 @@ function initPhysics() {
   engine.world.gravity.y = 0.7
 
   Matter.Events.on(engine, 'collisionActive', function touchedGround(event) {
-    if (event.pairs[0].bodyA === world.body[munster] && jumping)
-      jumping = false;
+    if (event.pairs[0].bodyA === world.body[munster] && jumping) {
+      jumping = doubleJumping = false;
+    }
   })
 }
 
@@ -128,31 +132,37 @@ function initKeyListeners() {
   window.addEventListener('keyup', onKeyUp)
 }
 
-var controlsMask = C_PHYSICS | C_PHYSICS_CONTROLS
-
-function applyForce(body, force) {
-  Matter.Body.applyForce(body,
-                         body.position,
-                         force)
-}
-
 var velocity = 0.02
 var jumpVelocity = 0.3
 var jumping = false
+var doubleJumping = false
+
+function applyForce(body, force) {
+  Matter.Body.applyForce(body, body.position, force)
+}
 
 function controls() {
-      console.log(jumping)
-  for (var e of getEntities(controlsMask)) {
 
-    if (keys[K_SPACE] && jumping === false) {
-      applyForce(world.body[e], point(0, -jumpVelocity))
-      jumping = true
-    }
+  var body = world.body[munster]
+  var multiplier = jumping ? 0.5 : 1
 
-    if (keys[K_LEFT])
-      applyForce(world.body[e], point(-velocity, 0))
-    if (keys[K_RIGHT])
-      applyForce(world.body[e], point(velocity, 0))
+  // Horizontal moves
+  if (keys[K_LEFT])
+    applyForce(body, point(-velocity * multiplier, 0))
+
+  if (keys[K_RIGHT])
+    applyForce(body, point(velocity * multiplier, 0))
+
+  // Jump
+  if (keys[K_SPACE] && jumping === false ) {
+    applyForce(body, point(0, -jumpVelocity))
+    jumping = true
+  }
+
+  // Double jump!
+  else if (keys[K_SPACE] && jumping === true && doubleJumping === false && body.velocity.y > 0) {
+    applyForce(body, point(0, -jumpVelocity))
+    doubleJumping = true;
   }
 }
 
@@ -189,7 +199,7 @@ var lastFrameTime
 function startLoop() {
   var now = performance.now()
   lastFrameTime = now
-  //Matter.Engine.run(engine);
+  Matter.Engine.run(engine);
   loop(now)
 }
 
@@ -199,7 +209,7 @@ function loop(now) {
 
   controls();
   updateTransitions(dt, now)
-  updatePhysics(dt, now)
+  //updatePhysics(dt, now)
 
   render()
 
