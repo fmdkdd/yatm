@@ -16,7 +16,7 @@ function parseMap() {
   var tilesetWidth = tileset.imagewidth / tileset.tilewidth;
   var tilesetHeight = tileset.imageheight / tileset.tileheight;
 
-  tiles = layer.data.map(function(tileId, index) {
+  return layer.data.map(function(tileId, index) {
 
     tileId -= tileset.firstgid;
 
@@ -30,6 +30,4 @@ function parseMap() {
       ty: Math.floor(tileId / tilesetHeight)
     }
   });
-
-  console.log(tiles[0], tiles[1], tiles[2], tiles[3]);
 }
