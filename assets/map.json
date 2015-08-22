@@ -23,8 +23,8 @@
         {
          "firstgid":1,
          "image":"tileset.png",
-         "imageheight":64,
-         "imagewidth":64,
+         "imageheight":320,
+         "imagewidth":320,
          "margin":0,
          "name":"tiles",
          "properties":

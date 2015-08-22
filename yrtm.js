@@ -31,11 +31,58 @@ function destroyEntity(e) {
 // World
 
 
-function initWorld() {
-  // TODO: load tiles
+function initWorld(cb) {
+  // Load tiles
+  var req = new XMLHttpRequest();
+  req.onload = function getMapRequest() {
+    var tmxData = JSON.parse(this.responseText)
+    buildTiles(tmxData)
+    cb()
+  }
+  req.open('get', 'assets/map.json', true);
+  req.send();
 
-  createTile(point(10, 11), {x: 1, y: 0})
   createMunster(point(10, 3))
+}
+
+function buildTiles(tmxData) {
+  var tiles = parseMap(tmxData)
+
+  for (var t of tiles) {
+    createTile(point(t.x * TILE_SIZE, t.y * TILE_SIZE),
+               {x: t.tx, y: t.ty})
+  }
+}
+
+function parseMap(tmxData) {
+  // One layer, one tileset
+  var layer = tmxData.layers[0];
+  var tileset = tmxData.tilesets[0];
+
+  var tilesetWidth = tileset.imagewidth / tileset.tilewidth;
+  var tilesetHeight = tileset.imageheight / tileset.tileheight;
+
+  var tiles = []
+
+  layer.data.forEach(function(tileId, index) {
+    // Skip empty tiles
+    if (tileId === 0)
+      return
+
+    tileId -= tileset.firstgid;
+
+    tiles.push({
+      // World coordinates
+      x: index % layer.width,
+      y: Math.floor(index / layer.height),
+
+      // Tile coordinates on the spritesheet
+      tx: tileId % tilesetWidth,
+      ty: Math.floor(tileId / tilesetHeight)
+    })
+  });
+
+  return tiles
 }
 
 function createMunster(position) {
@@ -79,6 +126,7 @@ function initCanvas() {
   ctx.imageSmoothingEnabled = false // pixel goodness
 
   spritesheet = document.getElementById('spritesheet')
+  tilesheet = document.getElementById('tilesheet')
 }
 
 function render() {
@@ -115,10 +163,10 @@ function renderTile(e, ctx) {
   ctx.save()
   ctx.translate(p.x, p.y)
 
-  ctx.drawImage(spritesheet,
+  ctx.drawImage(tilesheet,
                 s.x * TILE_SIZE, s.y * TILE_SIZE,
                 TILE_SIZE, TILE_SIZE,
-                p.x, p.y,
+                0, 0,
                 TILE_SIZE, TILE_SIZE)
 
   ctx.restore()
@@ -137,7 +185,7 @@ function renderMunster(e, ctx) {
   ctx.drawImage(spritesheet,
                 s.x * TILE_SIZE, s.y * TILE_SIZE,
                 TILE_SIZE, TILE_SIZE,
-                p.x, p.y,
+                0, 0,
                 TILE_SIZE, TILE_SIZE)
 
   ctx.restore()
@@ -151,9 +199,7 @@ document.addEventListener('DOMContentLoaded', init)
 
 function init() {
   initCanvas()
-  initWorld()
-
-  loop()
+  initWorld(loop)
 }
 
 function loop() {
