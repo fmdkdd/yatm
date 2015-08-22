@@ -47,8 +47,10 @@ function initWorld(cb) {
   createMunster(point(10, 3))
 }
 
+var munster;
+
 function createMunster(position) {
-  var e = createEntity()
+  var e = munster = createEntity()
 
   world.mask[e] =
     C_POSITION
@@ -62,13 +64,12 @@ function createMunster(position) {
   world.sprite[e] = {x: 0, y: 19}
 
   var options = {
-    friction: 0.1,
+    friction: 0.9,
     restitution: 0.2,
-    density: 0.01
+    density: 0.1
   }
-  world.body[e] = Matter.Bodies.circle(position.x, position.y,
-                                       8  ,
-                                       options)
+  world.body[e] = Matter.Bodies.circle(
+    position.x, position.y, 8, options)
 
   Matter.World.add(engine.world, [world.body[e]])
 }
@@ -100,8 +101,14 @@ function createTile(position, sprite) {
 var engine
 
 function initPhysics() {
+
   engine = Matter.Engine.create()
   engine.world.gravity.y = 0.7
+
+  Matter.Events.on(engine, 'collisionActive', function touchedGround(event) {
+    if (event.pairs[0].bodyA === world.body[munster] && jumping)
+      jumping = false;
+  })
 }
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -129,13 +136,18 @@ function applyForce(body, force) {
                          force)
 }
 
-var velocity = 0.005
-var jumpVelocity = 0.005
+var velocity = 0.02
+var jumpVelocity = 0.3
+var jumping = false
 
 function controls() {
+      console.log(jumping)
   for (var e of getEntities(controlsMask)) {
-    if (keys[K_SPACE])
+
+    if (keys[K_SPACE] && jumping === false) {
       applyForce(world.body[e], point(0, -jumpVelocity))
+      jumping = true
+    }
 
     if (keys[K_LEFT])
       applyForce(world.body[e], point(-velocity, 0))
@@ -177,6 +189,7 @@ var lastFrameTime
 function startLoop() {
   var now = performance.now()
   lastFrameTime = now
+  //Matter.Engine.run(engine);
   loop(now)
 }
 
