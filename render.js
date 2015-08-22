@@ -129,6 +129,14 @@ function renderMunster(e, ctx) {
     ctx.moveTo((bounds.max.x - bounds.min.x) / 2, (bounds.max.y - bounds.min.y) / 2)
     ctx.lineTo(body.velocity.x * 20, body.velocity.y * 20);
     ctx.stroke()
+
+    var part = body.parts[0]
+    var axis = part.axes[0];
+    ctx.strokeStyle = '#00ff00'
+    ctx.beginPath()
+    ctx.moveTo((bounds.max.x - bounds.min.x) / 2, (bounds.max.y - bounds.min.y) / 2)
+    ctx.lineTo(axis.x * 20, axis.y * 20)
+    ctx.stroke()
   }
 
   ctx.restore()

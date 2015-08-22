@@ -68,9 +68,10 @@ function createMunster(position) {
                      {x: 6, y: 0}]
 
   var options = {
-    friction: 0.9,
+    friction: 0.8,
+    frictionAir: 0.075,
     restitution: 0.2,
-    density: 0.1
+    density: 0.5
   }
   world.body[e] = Matter.Bodies.circle(
     position.x, position.y, 8, options)
@@ -99,7 +100,7 @@ function createTile(position, sprite, properties) {
   world.body[e] = Matter.Bodies.rectangle(
     position.x + offset.x, position.y + offset.y,
     width, height,
-    { isStatic: true })
+    { isStatic: true, friction: 0.5 })
 
   Matter.World.add(engine.world, [world.body[e]])
 }
@@ -113,7 +114,7 @@ var engine
 function initPhysics() {
 
   engine = Matter.Engine.create()
-  engine.world.gravity.y = 0.7
+  engine.world.gravity.y = 1.4
 
   // The ground must be touched before jumps
   Matter.Events.on(engine, 'collisionActive', function touchedGround(event) {
@@ -139,19 +140,19 @@ var justChanged = {} // Keep track of which keys have just been pressed/released
 
 function initKeyListeners() {
   window.addEventListener('keydown', function(e) {
-    justChanged[e.which] = keys[e.which] === false
+    justChanged[e.which] = keys[e.which] === false || keys[e.which] === undefined
     keys[e.which] = true
   })
   window.addEventListener('keyup', function(e) {
-    justChanged[e.which] = keys[e.which] === true
+    justChanged[e.which] = keys[e.which] === true || keys[e.which] === undefined
     keys[e.which] = false
   })
 }
 
-var velocity = 0.01
-var jumpVelocity = 0.25
-var jumping = false
-var doubleJumping = false
+var velocity = 0.1
+var jumpVelocity = 3
+var jumping = true
+var doubleJumping = true
 
 function applyForce(body, force) {
   Matter.Body.applyForce(body, body.position, force)
@@ -168,7 +169,7 @@ function controls() {
   if (keys[K_RIGHT])
     applyForce(body, point(velocity * multiplier, 0))
 
-  // If the jump key was just pressed
+  // If the jump key was just pressed...
   if (keys[K_SPACE] && justChanged[K_SPACE]) {
 
     // Jump
@@ -181,7 +182,8 @@ function controls() {
     // Double jump!
     else if (jumping === true && doubleJumping === false && body.velocity.y > 0) {
       applyForce(body, point(0, -jumpVelocity))
-      doubleJumping = true;
+      doubleJumping = true
+      sfx_play('sfx-jump')
     }
   }
 
