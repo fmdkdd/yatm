@@ -103,6 +103,17 @@ function initPhysics() {
 }
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// Audio
+
+var sfx_cache = {}
+
+function sfx_play(id) {
+  if (!sfx_cache[id])
+    sfx_cache[id] = document.getElementById(id)
+  sfx_cache[id].play()
+}
+
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // Entry point
 
 document.addEventListener('DOMContentLoaded', init)
