@@ -18,6 +18,7 @@ function render() {
   ctx.clearRect(0, 0, canvas.width, canvas.height)
 
   ctx.save()
+  ctx.scale(camera.zoom, camera.zoom)
   ctx.translate(camera.x, camera.y)
 
   for (var e = 0, n = world.mask.length; e < n; ++e) {
@@ -30,7 +31,21 @@ function render() {
   ctx.restore()
 }
 
-var camera = {x: 0, y: 0}
+var camera = {x: 0, y: 0, zoom: 1}
+
+function camera_transition(to, length, bezier) {
+  if (length == null) length = 500
+
+  bezier = bezier || cubicBezier(
+    point(0.25, 0.1),
+    point(0.25, 0.1)
+  )
+
+  var from = {x: camera.x, y: camera.y, zoom: camera.zoom}
+
+  activeTransitions.push(
+    transition.new(camera, from, to, length, bezier))
+}
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // Individual rendering functions

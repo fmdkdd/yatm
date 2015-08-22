@@ -47,7 +47,6 @@ function createMunster(position) {
   world.position[e] = point(position.x, position.y)
   world.renderable[e] = renderMunster
   world.sprite[e] = {x: 0, y: 19}
-
 }
 
 function createTile(position, sprite) {
@@ -74,6 +73,7 @@ function init() {
 }
 
 function loop() {
+  updateTransitions()
   render()
 
   requestAnimationFrame(loop)

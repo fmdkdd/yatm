@@ -152,6 +152,10 @@ function vec_minus(u, v) {
   return point(u.x - v.x, u.y - v.y)
 }
 
+function vec_mult(v, s) {
+  return point(v.x * s, v.y * s)
+}
+
 function vec_dot(u, v) {
   return u.x * v.x + u.y * v.y
 }
