@@ -56,13 +56,14 @@ function createMunster(position) {
   world.sprite[e] = {x: 0, y: 19}
 
   var options = {
-    friction: 1,
-    restitution: 0.1,
-    density: 0.001
+    friction: 0.1,
+    restitution: 0.2,
+    density: 0.01
   }
   world.body[e] = Matter.Bodies.circle(position.x, position.y,
-                                       8,
+                                       8  ,
                                        options)
+
   Matter.World.add(engine.world, [world.body[e]])
 }
 
@@ -122,8 +123,8 @@ function applyForce(body, force) {
                          force)
 }
 
-var velocity = 0.0005
-var jumpVelocity = 0.0005
+var velocity = 0.005
+var jumpVelocity = 0.005
 
 function controls() {
   for (var e = 0, n = world.mask.length; e < n; ++e) {

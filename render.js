@@ -1,3 +1,5 @@
+var DEBUG = false
+
 var canvas
 var ctx
 var spritesheet
@@ -69,6 +71,12 @@ function renderTile(e, ctx) {
                 0, 0,
                 TILE_SIZE, TILE_SIZE)
 
+  if (DEBUG) {
+    var bounds = world.body[e].parts[0].bounds
+    ctx.strokeStyle = '#ff0000'
+    ctx.strokeRect(0, 0, bounds.max.x - bounds.min.x, bounds.max.y - bounds.min.y)
+  }
+
   ctx.restore()
 }
 
@@ -76,7 +84,8 @@ function renderMunster(e, ctx) {
   if (!(world.mask[e] & C_POSITION))
     console.error('Trying to render münster without a position')
 
-  var p = world.body[e].position
+  var body = world.body[e]
+  var p = body.position
   var s = world.sprite[e] || defaultSprite
 
   ctx.save()
@@ -87,6 +96,18 @@ function renderMunster(e, ctx) {
                 TILE_SIZE, TILE_SIZE,
                 0, 0,
                 TILE_SIZE, TILE_SIZE)
+
+  if (DEBUG) {
+    var bounds = world.body[e].parts[0].bounds
+    ctx.strokeStyle = '#ff0000'
+    ctx.strokeRect(0, 0, bounds.max.x - bounds.min.x, bounds.max.y - bounds.min.y)
+
+    ctx.strokeStyle = '#0000ff'
+    ctx.beginPath()
+    ctx.moveTo((bounds.max.x - bounds.min.x) / 2, (bounds.max.y - bounds.min.y) / 2)
+    ctx.lineTo(body.velocity.x * 20, body.velocity.y * 20);
+    ctx.stroke()
+  }
 
   ctx.restore()
 
