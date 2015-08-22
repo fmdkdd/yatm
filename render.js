@@ -1,4 +1,4 @@
-var DEBUG = false
+var DEBUG = true
 
 var canvas
 var ctx
@@ -63,32 +63,36 @@ function camera_focus(position) {
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // Individual rendering functions
 
-var TILE_SIZE = 16
+var TILE_SIZE = TS = 16
 var defaultSprite = {x: 0, y : 0}
 
 function renderTile(e, ctx) {
   if (!(world.mask[e] & C_POSITION))
     console.error('Trying to render tile without a position')
 
-  var p = world.body[e].position
+  var p = world.position[e]
   var s = world.sprite[e] || defaultSprite
 
   ctx.save()
   ctx.translate(p.x, p.y)
 
   ctx.drawImage(tilesheet,
-                s.x * TILE_SIZE, s.y * TILE_SIZE,
-                TILE_SIZE, TILE_SIZE,
-                0, 0,
-                TILE_SIZE, TILE_SIZE)
-
-  if (DEBUG) {
-    var bounds = world.body[e].parts[0].bounds
-    ctx.strokeStyle = '#ff0000'
-    ctx.strokeRect(0, 0, bounds.max.x - bounds.min.x, bounds.max.y - bounds.min.y)
-  }
+                s.x * TS, s.y * TS, TS, TS,
+                0, 0, TS, TS)
 
   ctx.restore()
+
+  if (DEBUG) {
+    ctx.save()
+    p = world.body[e].position
+    ctx.translate(p.x, p.y)
+    var bounds = world.body[e].parts[0].bounds
+    var w = bounds.max.x - bounds.min.x
+    var h = bounds.max.y - bounds.min.y
+    ctx.strokeStyle = '#ff0000'
+    ctx.strokeRect(TS/2 - w/2, TS/2 - h/2, w, h)
+    ctx.restore()
+  }
 }
 
 function renderMunster(e, ctx) {

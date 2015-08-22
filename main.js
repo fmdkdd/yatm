@@ -85,7 +85,7 @@ function createMunster(position) {
   return e
 }
 
-function createTile(position, sprite) {
+function createTile(position, sprite, properties) {
   var e = createEntity()
 
   world.mask[e] =
@@ -97,9 +97,13 @@ function createTile(position, sprite) {
   world.renderable[e] = renderTile
   world.sprite[e] = {x: sprite.x, y: sprite.y}
 
+  var width = parseInt(properties.width) || TILE_SIZE
+  var height = parseInt(properties.height) || TILE_SIZE
+  var offset = {x: parseInt(properties.offsetX, 10) || 0,
+                y: parseInt(properties.offsetY, 10) || 0}
   world.body[e] = Matter.Bodies.rectangle(
-    position.x, position.y,
-    TILE_SIZE, TILE_SIZE,
+    position.x + offset.x, position.y + offset.y,
+    width, height,
     { isStatic: true })
 
   Matter.World.add(engine.world, [world.body[e]])

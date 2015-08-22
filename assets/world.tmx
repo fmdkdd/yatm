@@ -2,6 +2,17 @@
 <map version="1.0" orientation="orthogonal" renderorder="right-down" width="400" height="400" tilewidth="16" tileheight="16" nextobjectid="1">
  <tileset firstgid="1" name="tileset" tilewidth="16" tileheight="16" tilecount="400">
   <image source="tileset.png" width="320" height="320"/>
+  <tile id="21">
+   <properties>
+    <property name="height" value="8"/>
+    <property name="offsetY" value="4"/>
+   </properties>
+  </tile>
+  <tile id="23">
+   <properties>
+    <property name="height" value="4"/>
+   </properties>
+  </tile>
  </tileset>
  <layer name="Tile Layer 1" width="400" height="400">
   <data>

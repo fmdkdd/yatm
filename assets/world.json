@@ -34,6 +34,18 @@
          "spacing":0,
          "tilecount":400,
          "tileheight":16,
+         "tileproperties":
+            {
+             "21":
+                {
+                 "height":"8",
+                 "offsetY":"4"
+                },
+             "23":
+                {
+                 "height":"4"
+                }
+            },
          "tilewidth":16
         }],
  "tilewidth":16,

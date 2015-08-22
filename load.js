@@ -14,7 +14,8 @@ function buildTiles(tmxData) {
 
   for (var t of tiles) {
     createTile(point(t.x * TILE_SIZE, t.y * TILE_SIZE),
-               {x: t.tx, y: t.ty})
+               {x: t.tx, y: t.ty},
+               t.properties)
   }
 }
 
@@ -42,7 +43,9 @@ function parseMap(tmxData) {
 
       // Tile coordinates on the spritesheet
       tx: tileId % tilesetWidth,
-      ty: Math.floor(tileId / tilesetHeight)
+      ty: Math.floor(tileId / tilesetHeight),
+
+      properties: tileset.tileproperties[tileId] || {}
     })
   });
 
