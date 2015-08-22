@@ -25,12 +25,12 @@ var transition = {
 
     return {
       __proto__: this,
-      startTime: Date.now(),
+      startTime: performance.now(),
       obj, from, to, length, bezier}
   },
 
-  update() {
-    var dt = Date.now() - this.startTime
+  update(now) {
+    var dt = now - this.startTime
     var t = dt / this.length
 
     if (t > 1) {
@@ -47,10 +47,10 @@ var transition = {
 
 var activeTransitions = []
 
-function updateTransitions() {
+function updateTransitions(dt, now) {
   var newTransitions = []
   for (var t of activeTransitions) {
-    t.update()
+    t.update(now)
     if (!t.expire)
       newTransitions.push(t)
   }

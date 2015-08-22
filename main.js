@@ -110,22 +110,27 @@ document.addEventListener('DOMContentLoaded', init)
 function init() {
   initCanvas()
   initPhysics();
-  initWorld(loop)
+  initWorld(startLoop)
 }
 
-var lastUpdate = Date.now()
-
-function update() {
-  var now = Date.now()
-
-  Matter.Engine.update(engine, now - lastUpdate)
-
-  lastUpdate = now;
+function updatePhysics(dt, now) {
+  Matter.Engine.update(engine, dt)
 }
 
-function loop() {
-  updateTransitions()
-  update()
+var lastFrameTime
+
+function startLoop() {
+  var now = performance.now()
+  lastFrameTime = now
+  loop(now)
+}
+
+function loop(now) {
+  var dt = now - lastFrameTime
+  lastFrameTime = now
+
+  updateTransitions(dt, now)
+  updatePhysics(dt, now)
 
   render()
 
