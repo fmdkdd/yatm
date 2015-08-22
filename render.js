@@ -57,7 +57,7 @@ function renderTile(e, ctx) {
   if (!(world.mask[e] & C_POSITION))
     console.error('Trying to render tile without a position')
 
-  var p = world.position[e]
+  var p = world.body[e].position
   var s = world.sprite[e] || defaultSprite
 
   ctx.save()
@@ -76,7 +76,7 @@ function renderMunster(e, ctx) {
   if (!(world.mask[e] & C_POSITION))
     console.error('Trying to render münster without a position')
 
-  var p = world.position[e]
+  var p = world.body[e].position
   var s = world.sprite[e] || defaultSprite
 
   ctx.save()
