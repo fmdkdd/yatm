@@ -1,11 +1,13 @@
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // Engine
 
-var C_NONE         = 0,
-    C_POSITION     = 1 << 0,
-    C_BOUNDING_BOX = 1 << 1,
-    C_RENDERABLE   = 1 << 2,
-    C_PHYSICS      = 1 << 3
+var C_NONE             = 0,
+    C_POSITION         = 1 << 0,
+    C_BOUNDING_BOX     = 1 << 1,
+    C_RENDERABLE       = 1 << 2,
+    C_INPUT            = 1 << 3,
+    C_PHYSICS          = 1 << 4,
+    C_PHYSICS_CONTROLS = 1 << 5
 
 var world = {
   mask: [],
@@ -45,13 +47,22 @@ function createMunster(position) {
   world.mask[e] =
     C_POSITION
     | C_RENDERABLE
+    | C_INPUT
     | C_PHYSICS
+    | C_PHYSICS_CONTROLS
 
   world.position[e] = point(position.x, position.y)
   world.renderable[e] = renderMunster
   world.sprite[e] = {x: 0, y: 19}
 
-  world.body[e] = Matter.Bodies.circle(position.x, position.y, 8)
+  var options = {
+    friction: 1,
+    restitution: 0.1,
+    density: 0.001
+  }
+  world.body[e] = Matter.Bodies.circle(position.x, position.y,
+                                       8,
+                                       options)
   Matter.World.add(engine.world, [world.body[e]])
 }
 
@@ -71,6 +82,7 @@ function createTile(position, sprite) {
     position.x, position.y,
     TILE_SIZE, TILE_SIZE,
     { isStatic: true })
+
   Matter.World.add(engine.world, [world.body[e]])
 }
 
@@ -78,29 +90,56 @@ function createTile(position, sprite) {
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // Physics
 
-var Renderer = {
-  create: function() {
-    return {controller: Renderer}
-  },
-  world: function(engine) {
-    bodies = Matter.Composite.allBodies(engine.world)
-    bodies.forEach(function(body) {
-      ctx.strokeStyle = '#ff0000'
-      ctx.fillStyle = '#ff0000'
-      ctx.fillRect(0,
-                   0,
-                   TILE_SIZE,
-                   TILE_SIZE)
-    })
-  }
-}
-
 var engine
 
 function initPhysics() {
   engine = Matter.Engine.create()
-  engine.world.gravity.y = 1
+  engine.world.gravity.y = 0.7
 }
+
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// Input
+
+var keys = {}
+function onKeyDown(e) { keys[e.which] = true }
+function onKeyUp(e) { keys[e.which] = false }
+
+// Keyboard keycodes
+var K_LEFT  = 37,
+    K_RIGHT = 39,
+    K_SPACE = 32
+
+function initKeyListeners() {
+  window.addEventListener('keydown', onKeyDown)
+  window.addEventListener('keyup', onKeyUp)
+}
+
+var controlsMask = C_PHYSICS | C_PHYSICS_CONTROLS
+
+function applyForce(body, force) {
+  Matter.Body.applyForce(body,
+                         body.position,
+                         force)
+}
+
+var velocity = 0.0005
+var jumpVelocity = 0.0005
+
+function controls() {
+  for (var e = 0, n = world.mask.length; e < n; ++e) {
+    if ((world.mask[e] & controlsMask) === controlsMask) {
+
+      if (keys[K_SPACE])
+        applyForce(world.body[e], point(0, -jumpVelocity))
+
+      if (keys[K_LEFT])
+        applyForce(world.body[e], point(-velocity, 0))
+      if (keys[K_RIGHT])
+        applyForce(world.body[e], point(velocity, 0))
+    }
+  }
+}
+
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // Audio
@@ -121,6 +160,7 @@ document.addEventListener('DOMContentLoaded', init)
 function init() {
   initCanvas()
   initPhysics();
+  initKeyListeners();
   initWorld(startLoop)
 }
 
@@ -140,6 +180,7 @@ function loop(now) {
   var dt = now - lastFrameTime
   lastFrameTime = now
 
+  controls();
   updateTransitions(dt, now)
   updatePhysics(dt, now)
 
