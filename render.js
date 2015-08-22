@@ -23,11 +23,9 @@ function render() {
   ctx.scale(camera.zoom, camera.zoom)
   ctx.translate(camera.x, camera.y)
 
-  for (var e = 0, n = world.mask.length; e < n; ++e) {
-    if (world.mask[e] & C_RENDERABLE) {
-      var r = world.renderable[e]
-      r(e, ctx)
-    }
+  for (var e of getEntities(C_RENDERABLE)) {
+    var r = world.renderable[e]
+    r(e, ctx)
   }
 
   ctx.restore()

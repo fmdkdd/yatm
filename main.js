@@ -31,6 +31,12 @@ function destroyEntity(e) {
   world.mask[e] = C_NONE
 }
 
+function* getEntities(mask) {
+  for (var e = 0, n = world.mask.length; e < n; ++e)
+    if (world.mask[e] & mask === mask)
+      yield e
+}
+
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // World
@@ -127,17 +133,14 @@ var velocity = 0.005
 var jumpVelocity = 0.005
 
 function controls() {
-  for (var e = 0, n = world.mask.length; e < n; ++e) {
-    if ((world.mask[e] & controlsMask) === controlsMask) {
+  for (var e of getEntities(controlsMask)) {
+    if (keys[K_SPACE])
+      applyForce(world.body[e], point(0, -jumpVelocity))
 
-      if (keys[K_SPACE])
-        applyForce(world.body[e], point(0, -jumpVelocity))
-
-      if (keys[K_LEFT])
-        applyForce(world.body[e], point(-velocity, 0))
-      if (keys[K_RIGHT])
-        applyForce(world.body[e], point(velocity, 0))
-    }
+    if (keys[K_LEFT])
+      applyForce(world.body[e], point(-velocity, 0))
+    if (keys[K_RIGHT])
+      applyForce(world.body[e], point(velocity, 0))
   }
 }
 
