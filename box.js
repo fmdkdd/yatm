@@ -167,6 +167,14 @@ function vec_rotate(v, a) {
                v.x * sin + v.y * cos)
 }
 
+function mod(x, n) {
+  if (isNaN(x))
+    return x
+  else if (x >= 0)
+    return x % n
+  else return mod(x + n, n)
+}
+
 /**
  * Rotate POLY along ANGLE, then translate it along VEC, and return the result
  * as a new polygon.

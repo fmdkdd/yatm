@@ -3,6 +3,8 @@ var DEBUG = false
 var canvas
 var ctx
 var spritesheet
+var tilesheet
+var munster_sheet
 
 function initCanvas() {
   canvas = document.getElementById('canvas')
@@ -14,6 +16,7 @@ function initCanvas() {
 
   spritesheet = document.getElementById('spritesheet')
   tilesheet = document.getElementById('tilesheet')
+  munster_sheet = document.getElementById('munster-sheet')
 }
 
 function render() {
@@ -86,10 +89,17 @@ function renderMunster(e, ctx) {
   var p = body.position
   var s = world.sprite[e] || defaultSprite
 
+  var a = body.angle
+
+  if (Array.isArray(s)) {
+    var i = mod(Math.floor(a / (Math.PI / s.length)), s.length)
+    s = s[i]
+  }
+
   ctx.save()
   ctx.translate(p.x, p.y)
 
-  ctx.drawImage(spritesheet,
+  ctx.drawImage(munster_sheet,
                 s.x * TILE_SIZE, s.y * TILE_SIZE,
                 TILE_SIZE, TILE_SIZE,
                 0, 0,

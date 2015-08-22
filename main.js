@@ -64,7 +64,13 @@ function createMunster(position) {
 
   world.position[e] = point(position.x, position.y)
   world.renderable[e] = renderMunster
-  world.sprite[e] = {x: 0, y: 19}
+  world.sprite[e] = [{x: 0, y: 0},
+                     {x: 1, y: 0},
+                     {x: 2, y: 0},
+                     {x: 3, y: 0},
+                     {x: 4, y: 0},
+                     {x: 5, y: 0},
+                     {x: 6, y: 0}]
 
   var options = {
     friction: 0.9,
