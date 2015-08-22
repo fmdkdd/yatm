@@ -8,8 +8,8 @@ var munster_sheet
 
 function initCanvas() {
   canvas = document.getElementById('canvas')
-  canvas.width = 320
-  canvas.height = 200
+  canvas.width = 640
+  canvas.height = 400
 
   ctx = canvas.getContext('2d')
   ctx.imageSmoothingEnabled = false // pixel goodness
@@ -20,7 +20,10 @@ function initCanvas() {
 }
 
 function render() {
-  camera_focus(world.body[munster].position)
+  var p = world.body[munster].position
+  camera_transition(
+    {x: canvas.width / Math.pow(camera.zoom, 2) - p.x,
+     y: canvas.height / Math.pow(camera.zoom,2) - p.y}, 50)
 
   ctx.clearRect(0, 0, canvas.width, canvas.height)
 
@@ -36,7 +39,7 @@ function render() {
   ctx.restore()
 }
 
-var camera = {x: 0, y: 0, zoom: 1}
+var camera = {x: 0, y: 0, zoom: 3}
 
 function camera_transition(to, length, bezier) {
   if (length == null) length = 500
@@ -53,9 +56,8 @@ function camera_transition(to, length, bezier) {
 }
 
 function camera_focus(position) {
-  camera.x = canvas.width / 2 - position.x
-  camera.y = canvas.height / 2 - position.y
-  camera.zoom = 1
+  camera.x = canvas.width / Math.pow(camera.zoom,2) - position.x
+  camera.y = canvas.height / Math.pow(camera.zoom,2) - position.y
 }
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
