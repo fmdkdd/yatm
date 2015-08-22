@@ -43,16 +43,16 @@ function* getEntities(mask) {
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // World
 
+var munster;
+
 function initWorld(cb) {
   loadTiles(cb)
 
-  createMunster(point(10, 3))
+  munster = createMunster(point(3200, 3200))
 }
 
-var munster;
-
 function createMunster(position) {
-  var e = munster = createEntity()
+  var e = createEntity()
 
   world.mask[e] =
     C_POSITION
@@ -81,6 +81,8 @@ function createMunster(position) {
     position.x, position.y, 8, options)
 
   Matter.World.add(engine.world, [world.body[e]])
+
+  return e
 }
 
 function createTile(position, sprite) {

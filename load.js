@@ -5,7 +5,7 @@ function loadTiles(cb) {
     buildTiles(tmxData)
     cb()
   }
-  req.open('get', 'assets/map.json', true);
+  req.open('get', 'assets/world.json', true);
   req.send();
 }
 

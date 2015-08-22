@@ -20,6 +20,8 @@ function initCanvas() {
 }
 
 function render() {
+  camera_focus(world.body[munster].position)
+
   ctx.clearRect(0, 0, canvas.width, canvas.height)
 
   ctx.save()
@@ -48,6 +50,12 @@ function camera_transition(to, length, bezier) {
 
   activeTransitions.push(
     transition.new(camera, from, to, length, bezier))
+}
+
+function camera_focus(position) {
+  camera.x = canvas.width / 2 - position.x
+  camera.y = canvas.height / 2 - position.y
+  camera.zoom = 1
 }
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
