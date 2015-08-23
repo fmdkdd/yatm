@@ -45,7 +45,18 @@ var munster;
 function initWorld(cb) {
   loadTiles(cb)
 
-  munster = createMunster(point(3200, 3200))
+  munster = createMunster(point(3264, 3280))
+
+  // START ZOOM EFFECT
+  if (do_start_zoom) {
+    camera.zoom = 60
+    camera_focus({
+      x: world.position[munster].x + TS/2,
+      y: world.position[munster].y + TS/2,
+    })
+    camera_transition({zoom: 3}, 2000)
+    start_zooming = true
+  }
 }
 
 function createMunster(position) {

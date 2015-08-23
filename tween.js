@@ -33,9 +33,9 @@ var transition = {
     var dt = now - this.startTime
     var t = dt / this.length
 
-    if (t > 1) {
+    if (t >= 1) {
+      t = 1
       this.expire = true
-      return
     }
 
     var f = this.bezier(t)

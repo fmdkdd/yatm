@@ -19,11 +19,22 @@ function initCanvas() {
   munster_sheet = document.getElementById('munster-sheet')
 }
 
+var do_start_zoom = false
+var start_zooming = false
+
 function render() {
   var p = world.body[munster].position
-  camera_transition(
-    {x: canvas.width / Math.pow(camera.zoom, 2) - p.x,
-     y: canvas.height / Math.pow(camera.zoom,2) - p.y}, 50)
+
+  // START ZOOM EFFECT ONLY ONCE
+  if (start_zooming) {
+    camera_focus({x: p.x + TS/2, y: p.y + TS/2})
+    if (camera.zoom === 3) start_zooming = false
+  }
+
+  else
+    camera_transition(
+      {x: canvas.width / 2 / camera.zoom - (p.x + 8),
+       y: canvas.height / 2 / camera.zoom - (p.y + 8)}, 50)
 
   ctx.clearRect(0, 0, canvas.width, canvas.height)
 
@@ -56,8 +67,8 @@ function camera_transition(to, length, bezier) {
 }
 
 function camera_focus(position) {
-  camera.x = canvas.width / Math.pow(camera.zoom,2) - position.x
-  camera.y = canvas.height / Math.pow(camera.zoom,2) - position.y
+  camera.x = canvas.width/ 2 / camera.zoom - position.x
+  camera.y = canvas.height/ 2 / camera.zoom - position.y
 }
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
