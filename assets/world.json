@@ -21,8 +21,56 @@
          "width":400,
          "x":0,
          "y":0
+        }, 
+        {
+         "draworder":"topdown",
+         "height":400,
+         "name":"enemies",
+         "objects":[
+                {
+                 "ellipse":true,
+                 "height":22.5,
+                 "id":9,
+                 "name":"",
+                 "properties":
+                    {
+                     "amplitude":"16",
+                     "duration":"10000",
+                     "span":"128"
+                    },
+                 "rotation":0,
+                 "type":"fly",
+                 "visible":true,
+                 "width":25.5,
+                 "x":3121.25,
+                 "y":3267.25
+                }, 
+                {
+                 "ellipse":true,
+                 "height":22.5,
+                 "id":11,
+                 "name":"",
+                 "properties":
+                    {
+                     "amplitude":"16",
+                     "duration":"10000",
+                     "span":"100"
+                    },
+                 "rotation":0,
+                 "type":"fly",
+                 "visible":true,
+                 "width":25.5,
+                 "x":2828.75,
+                 "y":2860.25
+                }],
+         "opacity":1,
+         "type":"objectgroup",
+         "visible":true,
+         "width":400,
+         "x":0,
+         "y":0
         }],
- "nextobjectid":1,
+ "nextobjectid":12,
  "orientation":"orthogonal",
  "properties":
     {

@@ -6,7 +6,8 @@ var C_NONE             = 0,
     C_BOUNDING_BOX     = 1 << 1,
     C_RENDERABLE       = 1 << 2,
     C_INPUT            = 1 << 3,
-    C_PHYSICS          = 1 << 4
+    C_PHYSICS          = 1 << 4,
+    C_SINUSOID         = 1 << 5
 
 var world = {
   mask: [],
@@ -16,6 +17,7 @@ var world = {
   renderable: [],               // Function to render the entity
   sprite: [],                   // {x,y} coordinates into the spritesheet
   body: [],                     // Rigid body subject to the physics simulation
+  sinusoid: []
 }
 
 function createEntity() {
@@ -32,7 +34,7 @@ function destroyEntity(e) {
 
 function* getEntities(mask) {
   for (var e = 0, n = world.mask.length; e < n; ++e)
-    if (world.mask[e] & mask === mask)
+    if ((world.mask[e] & mask) === mask)
       yield e
 }
 
@@ -43,7 +45,7 @@ function* getEntities(mask) {
 var munster;
 
 function initWorld(cb) {
-  loadTiles(cb)
+  load(cb)
 
   munster = createMunster(point(0,0))
   resetMunster()
@@ -110,7 +112,6 @@ function createTile(position, sprite, tangible, properties) {
   world.renderable[e] = renderTile
   world.sprite[e] = {x: sprite.x, y: sprite.y}
 
-
   if (tangible) {
 
     world.mask[e] |= C_PHYSICS
@@ -132,6 +133,39 @@ function createTile(position, sprite, tangible, properties) {
   }
 }
 
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// Enemies
+
+function createEnemy(position, type, properties) {
+  var e = createEntity()
+
+  world.mask[e] =
+    C_POSITION
+    | C_RENDERABLE
+    | C_SINUSOID
+
+  world.renderable[e] = renderEnemy
+
+  world.position[e] = point(position.x, position.y)
+  world.sinusoid[e] =  {
+    start: point(position.x, position.y),
+    to: point(position.x + parseInt(properties.span), position.y),
+    amplitude: parseInt(properties.amplitude),
+    duration: parseInt(properties.duration)
+  }
+}
+
+function updateEnemies(dt, now) {
+  for (var e of getEntities(C_SINUSOID)) {
+    var sin = world.sinusoid[e]
+    var r = (now % sin.duration) / sin.duration
+    var x = r < 0.5 ?
+      sin.start.x + r * (sin.to.x - sin.start.x) :
+      sin.to.x + r * (sin.start.x - sin.to.x)
+    var y = sin.start.y + Math.sin(x) * sin.amplitude;
+    world.position[e] = point(x, y)
+  }
+}
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // Physics
@@ -268,6 +302,10 @@ function init() {
   initPhysics();
   initKeyListeners();
   initWorld(startLoop)
+
+  for (var e of getEntities(C_SINUSOID)) {
+    console.log(e)
+  }
 }
 
 function updatePhysics(dt, now) {
@@ -288,6 +326,7 @@ function loop(now) {
   lastFrameTime = now
 
   controls();
+  updateEnemies(dt, now)
   updateTransitions(dt, now)
   //updatePhysics(dt, now)
 

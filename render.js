@@ -201,3 +201,17 @@ function renderMunster(e, ctx) {
   ctx.restore()
 
 }
+
+function renderEnemy(e, ctx) {
+
+  var p = world.position[e]
+
+  ctx.save()
+  ctx.translate(p.x, p.y)
+
+  ctx.fillStyle = '#ff0000'
+  ctx.fillRect(0, 0, 10, 10)
+
+  ctx.restore()
+
+}
