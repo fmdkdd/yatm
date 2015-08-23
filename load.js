@@ -59,7 +59,6 @@ function parseTileLayer(tmxData, name, tangible) {
       // Only tiles in the main layer have bodies
       tangible: tangible
     })
-    if (name == 'decor') console.log(tiles[tiles.length-1])
   });
 
   return tiles
