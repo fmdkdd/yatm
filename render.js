@@ -1,4 +1,5 @@
 var DEBUG = false
+
 var canvas
 var ctx
 var spritesheet
@@ -17,8 +18,8 @@ function initCanvas() {
   tilesheet = document.getElementById('tilesheet')
   munster_sheet = document.getElementById('munster-sheet')
 
-  createBackground('hills-bg', 400, 10, 4, 2.5)
-  createBackground('hills2-bg', 340, 90, 2, 2)
+  createBackground('hills-bg', 5000, 10, 3, 3)
+  createBackground('hills2-bg', 2000, 220, 2, 2)
 }
 
 var backgrounds = []
@@ -38,8 +39,11 @@ function renderBackgrounds() {
   ctx.fillStyle = '#dddddd'
   ctx.fillRect(0, 0, canvas.width, 150)
 
-  ctx.fillStyle = '#99e550'
-  ctx.fillRect(0, 150, canvas.width, canvas.height)
+  ctx.fillStyle = '#dbd785'
+  ctx.fillRect(0, 150, canvas.width, 340)
+
+  ctx.fillStyle = '#c6b555'
+  ctx.fillRect(0, 340, canvas.width, canvas.height)
 
   backgrounds.forEach(function(bg) {
     for (var i = 0; i < 7; ++i) {
@@ -51,7 +55,7 @@ function renderBackgrounds() {
   })
 }
 
-var do_start_zoom = false
+var do_start_zoom = true
 var start_zooming = false
 
 function render() {
