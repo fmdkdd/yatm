@@ -1,13 +1,13 @@
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // Engine
 
-var C_NONE             = 0,
-    C_POSITION         = 1 << 0,
-    C_BOUNDING_BOX     = 1 << 1,
-    C_RENDERABLE       = 1 << 2,
-    C_INPUT            = 1 << 3,
-    C_PHYSICS          = 1 << 4,
-    C_SINUSOID         = 1 << 5
+var C_NONE         = 0,
+    C_POSITION     = 1 << 0,
+    C_BOUNDING_BOX = 1 << 1,
+    C_RENDERABLE   = 1 << 2,
+    C_INPUT        = 1 << 3,
+    C_PHYSICS      = 1 << 4,
+    C_SINUSOID     = 1 << 5
 
 var world = {
   mask: [],
@@ -224,7 +224,7 @@ function initPhysics() {
     testPair((a,b) => a.tileType === 'death'
              && b.entity === munster,
              function (a,b) {
-               resetMunster(b)
+               beginSpikeDeathAnim(a.entity)
              }, pair)
   })
 }
@@ -275,6 +275,7 @@ function applyForce(body, force) {
 }
 
 function controls() {
+  if (!(world.mask[munster] & C_INPUT)) return
 
   var body = world.body[munster]
   var multiplier = jumping ? 0.5 : 1
@@ -309,6 +310,16 @@ function controls() {
 
   // Clear
   justChanged = {}
+}
+
+function deactivateControls() {
+  world.mask[munster] &= ~C_INPUT
+  Matter.Sleeping.set(world.body[munster], true)
+}
+
+function activateControls() {
+  world.mask[munster] |= C_INPUT
+  Matter.Sleeping.set(world.body[munster], false)
 }
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

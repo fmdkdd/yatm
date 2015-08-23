@@ -7,6 +7,7 @@ var tilesheet
 var munster_sheet
 var titleImage
 var bling_sheet
+var spike_death
 
 function initCanvas() {
   canvas = document.getElementById('canvas')
@@ -21,6 +22,7 @@ function initCanvas() {
   munster_sheet = document.getElementById('munster-sheet')
   titleImage = document.getElementById('title')
   bling_sheet = document.getElementById('bling-sheet')
+  spike_death = document.getElementById('spike-death')
 
   createBackground('hills-bg', 5000, 10, 3, 3)
   createBackground('hills2-bg', 2000, 220, 2, 2)
@@ -245,3 +247,5 @@ function renderCoin(e, ctx) {
 
   ctx.restore()
 }
+
+function renderNothing() {}
