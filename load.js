@@ -30,7 +30,7 @@ function build(tmxData) {
   for (var o of objects) {
     var factory
 
-    if (o.type === 'fly')
+    if (o.type === 'fly' || o.type === 'worm')
       factory = createEnemy
     else if (o.type === 'coin')
       factory = createPowerup
