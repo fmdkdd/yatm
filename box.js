@@ -175,6 +175,15 @@ function mod(x, n) {
   else return mod(x + n, n)
 }
 
+function clamp(x, m, n) {
+  var a, b
+  if (m < n) { a = m; b = n}
+  else { a = n; b = m }
+  if (x < a) return a
+  else if (x > b) return b
+  else return x
+}
+
 /**
  * Rotate POLY along ANGLE, then translate it along VEC, and return the result
  * as a new polygon.

@@ -9,7 +9,8 @@ var C_NONE         = 0,
     C_PHYSICS      = 1 << 4,
     C_SINUSOID     = 1 << 5,
     C_MUNSTER      = 1 << 6,
-    C_COIN         = 1 << 7
+    C_COIN         = 1 << 7,
+    C_PATROL       = 1 << 8
 
 var world = {
   mask: [],
@@ -19,7 +20,8 @@ var world = {
   renderable: [],               // Function to render the entity
   sprite: [],                   // {x,y} coordinates into the spritesheet
   body: [],                     // Rigid body subject to the physics simulation
-  sinusoid: []
+  sinusoid: [],
+  patrolPath: [],
 }
 
 function createEntity() {
@@ -182,6 +184,13 @@ function createPowerup(position, type, properties) {
 // Enemies
 
 function createEnemy(position, type, properties) {
+  if (type === 'fly')
+    createFly(position, properties)
+  else if (type === 'worm')
+    createWorm(position, properties)
+}
+
+function createFly(position, properties) {
   var e = createEntity()
 
   world.mask[e] =
@@ -198,9 +207,47 @@ function createEnemy(position, type, properties) {
     amplitude: parseInt(properties.amplitude),
     duration: parseInt(properties.duration)
   }
+
+  return e
 }
 
-function updateEnemies(dt, now) {
+function createWorm(position, properties) {
+  var e = createEntity()
+
+  world.mask[e] =
+    C_POSITION
+    | C_RENDERABLE
+    | C_BOUNDING_BOX
+    | C_PATROL
+
+  world.position[e] = point(position.x, position.y)
+  world.renderable[e] = renderNothing
+  world.boundingBox[e] = {x: position.x,
+                          y: position.y,
+                          width: 8,
+                          height: 5}
+
+  var patrol = {
+    start: {
+      x: parseInt(properties.patrolStartX, 10) || 20,
+      y: parseInt(properties.patrolStartY, 10) || 0,
+    },
+    end: {
+      x: parseInt(properties.patrolEndX, 10) || 0,
+      y: parseInt(properties.patrolEndY, 10) || 0,
+    },
+  }
+
+  world.patrolPath[e] = {
+    start: vec_plus(position, patrol.start),
+    end: vec_plus(position, patrol.end),
+    speed: parseInt(properties.patrolSpeed, 10) || 0.3,
+  }
+
+  return e
+}
+
+function updateSinusoid(dt, now) {
   for (var e of getEntities(C_SINUSOID)) {
     var sin = world.sinusoid[e]
     var r = (now % sin.duration) / sin.duration
@@ -209,6 +256,31 @@ function updateEnemies(dt, now) {
       sin.to.x + r * (sin.start.x - sin.to.x)
     var y = sin.start.y + Math.sin(x) * sin.amplitude;
     world.position[e] = point(x, y)
+  }
+}
+
+function updatePatrol(dt, now) {
+  for (var e of getEntities(C_PATROL)) {
+    var path = world.patrolPath[e]
+    var p = world.position[e]
+
+    var start = path.reverse ? path.end : path.start
+    var end = path.reverse ? path.start : path.end
+
+    var v = vec_unit(vec_minus(end, start))
+    v = vec_mult(v, path.speed)
+
+    p.x = clamp(p.x + v.x, start.x, end.x)
+    p.y = clamp(p.y + v.y, start.y, end.y)
+
+    if (world.mask[e] & C_BOUNDING_BOX) {
+      var b = world.boundingBox[e]
+      b.x = clamp(p.x + v.x, start.x, end.x)
+      b.y = clamp(b.y + v.y, start.y, end.y)
+    }
+
+    if (vec_length(vec_minus(p, end)) <= 1)
+      path.reverse = !path.reverse
   }
 }
 
@@ -255,7 +327,6 @@ function moveBody(b, pos) {
   Matter.Body.translate(b, {x: -b.position.x,
                             y: -b.position.y})
   Matter.Body.translate(b, pos)
-
 }
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -498,7 +569,8 @@ function loop(now) {
   lastFrameTime = now
 
   controls();
-  updateEnemies(dt, now)
+  updateSinusoid(dt, now)
+  updatePatrol(dt, now)
   updateTransitions(dt, now)
   //updatePhysics(dt, now)
   checkCollisions()
