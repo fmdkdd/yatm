@@ -138,6 +138,31 @@ function createTile(position, sprite, tangible, properties) {
   }
 }
 
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// Powerups
+
+function createPowerup(position, type, properties) {
+  var e = createEntity()
+
+  world.mask[e] =
+    C_POSITION
+    | C_RENDERABLE
+
+  if (type === 'coin')
+    world.renderable[e] = renderCoin
+  else
+    console.error('Unknown powerup type!', type)
+
+  world.position[e] = point(position.x, position.y)
+
+  world.sprite[e] = [{x: 0, y: 0},
+                     {x: 1, y: 0},
+                     {x: 2, y: 0},
+                     {x: 3, y: 0}]
+
+  return e
+}
+
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // Enemies
 
@@ -299,6 +324,7 @@ function sfx_play(id) {
 
 function initAudio() {
   document.getElementById('bgm').play()
+  document.getElementById('sfx-pickup-coin').volume = 0.15
 }
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

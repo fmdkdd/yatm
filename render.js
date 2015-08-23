@@ -6,6 +6,7 @@ var spritesheet
 var tilesheet
 var munster_sheet
 var titleImage
+var bling_sheet
 
 function initCanvas() {
   canvas = document.getElementById('canvas')
@@ -19,6 +20,7 @@ function initCanvas() {
   tilesheet = document.getElementById('tilesheet')
   munster_sheet = document.getElementById('munster-sheet')
   titleImage = document.getElementById('title')
+  bling_sheet = document.getElementById('bling-sheet')
 
   createBackground('hills-bg', 5000, 10, 3, 3)
   createBackground('hills2-bg', 2000, 220, 2, 2)
@@ -98,6 +100,8 @@ function render() {
 
   if (start_zooming)
     ctx.drawImage(titleImage, 5, 60, 63 * 10, 24 * 10)
+
+  frame += frameStep
 }
 
 var camera = {x: 0, y: 0, zoom: 3}
@@ -217,4 +221,27 @@ function renderEnemy(e, ctx) {
 
   ctx.restore()
 
+}
+
+var frame = 0
+var frameStep = 0.25
+
+function renderCoin(e, ctx) {
+  var p = world.position[e]
+  var s = world.sprite[e] || defaultSprite
+
+  if (Array.isArray(s)) {
+    s = s[Math.floor(frame % s.length)]
+  }
+
+  ctx.save()
+  ctx.translate(p.x, p.y)
+
+  ctx.drawImage(bling_sheet,
+                s.x * TILE_SIZE, s.y * TILE_SIZE,
+                TILE_SIZE, TILE_SIZE,
+                0, 0,
+                TILE_SIZE, TILE_SIZE)
+
+  ctx.restore()
 }

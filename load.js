@@ -27,6 +27,12 @@ function build(tmxData) {
 
   for (var e of enemies)
     createEnemy(point(e.x, e.y), e.type, e.properties)
+
+  // Coins and powerups
+  var powerups = parsePowerupLayer(tmxData)
+
+  for (var p of powerups)
+    createPowerup(point(p.x, p.y), p.type, p.properties)
 }
 
 function parseTileLayer(tmxData, name, tangible) {
@@ -88,4 +94,27 @@ function parseEnemyLayer(tmxData) {
   });
 
   return enemies
+}
+
+function parsePowerupLayer(tmxData) {
+
+  var powerups = []
+  var layer = tmxData.layers.filter(function(l) { return l.name == 'coins' })[0]
+
+  layer.objects.forEach(function(object) {
+
+    var props = object.properties || {}
+
+    powerups.push({
+      // World coordinates
+      x: object.x,
+      y: object.y,
+
+      type: object.type,
+
+      properties: props
+    })
+  });
+
+  return powerups
 }
