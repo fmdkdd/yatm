@@ -444,14 +444,29 @@ function activateControls() {
 var sfx_cache = {}
 
 function sfx_play(id) {
-  if (!sfx_cache[id])
-    sfx_cache[id] = document.getElementById(id)
-  sfx_cache[id].play()
+  // Find first unused channel
+  for (var c of sfx_cache[id]) {
+    if (c.currentTime === 0 || c.ended) {
+      c.play()
+      return
+    }
+  }
 }
+
+var channels = 2
 
 function initAudio() {
   document.getElementById('bgm').play()
-  document.getElementById('sfx-pickup-coin').volume = 0.15
+
+  for (var a of Array.from(document.querySelectorAll('.sfx'))) {
+    sfx_cache[a.id] = [a]
+    for (var i = 1; i < channels; ++i) {
+      sfx_cache[a.id].push(new Audio(a.src))
+    }
+  }
+
+  for (a of sfx_cache['sfx-pickup-coin'])
+    a.volume = 0.15
 }
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
