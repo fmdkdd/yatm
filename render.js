@@ -5,6 +5,7 @@ var ctx
 var spritesheet
 var tilesheet
 var munster_sheet
+var meanpeople_sheet
 var titleImage
 var bling_sheet
 var spike_death
@@ -21,6 +22,7 @@ function initCanvas() {
   spritesheet = document.getElementById('spritesheet')
   tilesheet = document.getElementById('tilesheet')
   munster_sheet = document.getElementById('munster-sheet')
+  meanpeople_sheet = document.getElementById('meanpeople-sheet')
   titleImage = document.getElementById('title')
   bling_sheet = document.getElementById('bling-sheet')
   spike_death = document.getElementById('spike-death')
@@ -155,6 +157,7 @@ function camera_focus(position) {
 // Individual rendering functions
 
 var TILE_SIZE = TS = 16
+var TILE_SIZE2 = 32
 var defaultSprite = {x: 0, y : 0}
 
 function renderTile(e, ctx) {
@@ -297,7 +300,29 @@ function renderWorm(e, ctx) {
                 TILE_SIZE, TILE_SIZE)
 
   ctx.restore()
+}
 
+function renderPeople(e, ctx) {
+  var p = world.position[e]
+  var s = world.sprite[e]
+  var path = world.patrolPath[e]
+
+  var anim = s.animations[s.current]
+  s = anim[Math.floor(frame/20 % anim.length)]
+
+  ctx.save()
+  ctx.translate(p.x, p.y)
+
+  if (!path.reverse)
+    ctx.scale(-1, 1)
+
+  ctx.drawImage(meanpeople_sheet,
+                s.x * TILE_SIZE, 0,
+                TILE_SIZE, TILE_SIZE2,
+                -8, 0, // X-axis centered to avoid shifts when flipping
+                TILE_SIZE, TILE_SIZE2)
+
+  ctx.restore()
 }
 
 function renderNothing() {}

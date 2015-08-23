@@ -305,6 +305,44 @@ function updatePatrol(dt, now) {
   }
 }
 
+function createMeanPeople(position, type, properties) {
+  var e = createEntity()
+
+  world.mask[e] =
+    C_POSITION
+    | C_RENDERABLE
+    | C_PATROL
+
+  world.position[e] = point(position.x, position.y)
+  world.renderable[e] = renderPeople
+
+  // Characters on each line of the sprite sheet
+  // have different appearances
+  var variant = parseInt(properties.variant) || 0
+
+  world.sprite[e] = {
+    animations: {
+      'walk': [{x: 0, y: variant},
+               {x: 1, y: variant}],
+      'flee': [{x: 0, y: variant},
+               {x: 1, y: variant}]
+    },
+    current: 'walk'
+  }
+
+  var left = parseInt(properties.left) || 10
+  var right = parseInt(properties.right) || 10
+  var speed = parseFloat(properties.speed) || 0.3
+
+  world.patrolPath[e] = {
+    start: vec_plus(position, point(-left, 0)),
+    end: vec_plus(position, point(right, 0)),
+    speed: speed,
+  }
+
+  return e
+}
+
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // Physics
 

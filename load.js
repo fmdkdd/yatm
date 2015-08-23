@@ -26,6 +26,7 @@ function build(tmxData) {
   // Objects
   var objects = parseObjectLayer(tmxData, 'coins')
   objects = objects.concat(parseObjectLayer(tmxData, 'enemies'))
+  objects = objects.concat(parseObjectLayer(tmxData, 'people'))
 
   for (var o of objects) {
     var factory
@@ -34,6 +35,8 @@ function build(tmxData) {
       factory = createEnemy
     else if (o.type === 'coin')
       factory = createPowerup
+    else if (o.type === 'people')
+      factory = createMeanPeople
     else {
       console.log('Unknown object type: ' + o.type)
       continue
