@@ -10,7 +10,8 @@ var C_NONE         = 0,
     C_SINUSOID     = 1 << 5,
     C_MUNSTER      = 1 << 6,
     C_COIN         = 1 << 7,
-    C_PATROL       = 1 << 8
+    C_PATROL       = 1 << 8,
+    C_FLY          = 1 << 9
 
 var world = {
   mask: [],
@@ -197,6 +198,8 @@ function createFly(position, properties) {
     C_POSITION
     | C_RENDERABLE
     | C_SINUSOID
+    | C_BOUNDING_BOX
+    | C_FLY
 
   world.renderable[e] = renderEnemy
 
@@ -206,6 +209,13 @@ function createFly(position, properties) {
     to: point(position.x + parseInt(properties.span), position.y),
     amplitude: parseInt(properties.amplitude),
     duration: parseInt(properties.duration)
+  }
+
+  world.boundingBox[e] = {
+    x: position.x,
+    y: position.y,
+    width: 10,
+    height: 10,
   }
 
   return e
@@ -256,6 +266,11 @@ function updateSinusoid(dt, now) {
       sin.to.x + r * (sin.start.x - sin.to.x)
     var y = sin.start.y + Math.sin(x) * sin.amplitude;
     world.position[e] = point(x, y)
+
+    if (world.mask[e] & C_BOUNDING_BOX) {
+      world.boundingBox[e].x = x
+      world.boundingBox[e].y = y
+    }
   }
 }
 
@@ -548,6 +563,13 @@ function init() {
   addCollisionHandler(C_MUNSTER, C_COIN, function(m, c) {
     sfx_play('sfx-pickup-coin')
     destroyEntity(c)
+  })
+
+
+  addCollisionHandler(C_MUNSTER, C_FLY, function(m, f) {
+    // 1. Detect fly collision
+    // TODO: 2. ???
+    // TODO: 3. PROFIT!
   })
 }
 
