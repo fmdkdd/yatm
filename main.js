@@ -32,6 +32,10 @@ function destroyEntity(e) {
   world.mask[e] = C_NONE
 }
 
+function testEntity(e, mask) {
+  return (world.mask[e] & mask) === mask
+}
+
 function* getEntities(mask) {
   for (var e = 0, n = world.mask.length; e < n; ++e)
     if ((world.mask[e] & mask) === mask)
@@ -120,6 +124,7 @@ function createTile(position, sprite, tangible, properties) {
     var height = parseInt(properties.height) || TILE_SIZE
     var offset = {x: parseInt(properties.offsetX, 10) || 0,
                   y: parseInt(properties.offsetY, 10) || 0}
+
     world.body[e] = Matter.Bodies.rectangle(
       position.x + offset.x, position.y + offset.y,
       width, height,

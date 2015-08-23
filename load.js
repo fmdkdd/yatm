@@ -13,7 +13,7 @@ function build(tmxData) {
 
   // Tiles
   var tiles = parseTileLayer(tmxData, 'main', true)
-  tiles.concat(parseTileLayer(tmxData, 'decor', false))
+  tiles = tiles.concat(parseTileLayer(tmxData, 'decor', false))
 
   for (var t of tiles) {
     createTile(point(t.x * TILE_SIZE, t.y * TILE_SIZE),
@@ -36,7 +36,7 @@ function parseTileLayer(tmxData, name, tangible) {
   var tilesetHeight = tileset.imageheight / tileset.tileheight
 
   var tiles = []
-  var layer = tmxData.layers.filter(function(l) { return l.name == name })[0]
+  var layer = tmxData.layers.filter(function(l) { return l.name === name })[0]
 
   layer.data.forEach(function(tileId, index) {
     // Skip empty tiles
@@ -57,8 +57,9 @@ function parseTileLayer(tmxData, name, tangible) {
       properties: tileset.tileproperties[tileId] || {},
 
       // Only tiles in the main layer have bodies
-      tangible: layer.name === 'main'
+      tangible: tangible
     })
+    if (name == 'decor') console.log(tiles[tiles.length-1])
   });
 
   return tiles

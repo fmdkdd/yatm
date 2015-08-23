@@ -57,7 +57,7 @@ function renderBackgrounds() {
   })
 }
 
-var do_start_zoom = true
+var do_start_zoom = false
 var start_zooming = false
 
 function render() {
@@ -128,7 +128,7 @@ var TILE_SIZE = TS = 16
 var defaultSprite = {x: 0, y : 0}
 
 function renderTile(e, ctx) {
-  if (!(world.mask[e] & C_POSITION))
+  if (!testEntity(e, C_POSITION))
     console.error('Trying to render tile without a position')
 
   var p = world.position[e]
@@ -140,7 +140,6 @@ function renderTile(e, ctx) {
   ctx.drawImage(tilesheet,
                 s.x * TS, s.y * TS, TS, TS,
                 0, 0, TS, TS)
-
   ctx.restore()
 
   if (DEBUG) {
