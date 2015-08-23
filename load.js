@@ -12,8 +12,7 @@ function load(cb) {
 function build(tmxData) {
 
   // Tiles
-  var tiles = []
-  tiles = tiles.concat(parseTileLayer(tmxData, 'decor2', false))
+  var tiles = parseTileLayer(tmxData, 'decor2', false)
   tiles = tiles.concat(parseTileLayer(tmxData, 'decor', false))
   tiles = tiles.concat(parseTileLayer(tmxData, 'main', true))
 
@@ -24,17 +23,24 @@ function build(tmxData) {
                t.properties)
   }
 
-  // Enemies
-  var enemies = parseEnemyLayer(tmxData)
+  // Objects
+  var objects = parseObjectLayer(tmxData, 'coins')
+  objects = objects.concat(parseObjectLayer(tmxData, 'enemies'))
 
-  for (var e of enemies)
-    createEnemy(point(e.x, e.y), e.type, e.properties)
+  for (var o of objects) {
+    var factory
 
-  // Coins and powerups
-  var powerups = parsePowerupLayer(tmxData)
+    if (o.type === 'fly')
+      factory = createEnemy
+    else if (o.type === 'coin')
+      factory = createPowerup
+    else {
+      console.log('Unknown object type: ' + o.type)
+      continue
+    }
 
-  for (var p of powerups)
-    createPowerup(point(p.x, p.y), p.type, p.properties)
+    factory(point(o.x, o.y), o.type, o.properties)
+  }
 }
 
 function parseTileLayer(tmxData, name, tangible) {
@@ -72,51 +78,24 @@ function parseTileLayer(tmxData, name, tangible) {
   return tiles
 }
 
-function parseEnemyLayer(tmxData) {
+function parseObjectLayer(tmxData, name) {
 
-  var enemies = []
-  var layer = tmxData.layers.filter(function(l) { return l.name == 'enemies' })[0]
+  var objects = []
+  var layer = tmxData.layers.filter(function(l) { return l.name == name })[0]
 
   layer.objects.forEach(function(object) {
 
-    var props = object.properties || {}
-    if (props.duration === undefined) props.duration = 10000
-    if (props.span === undefined) props.span = 100
-    if (props.amplitude === undefined) props.amplitude = 10
-
-    enemies.push({
+    objects.push({
       // World coordinates
       x: object.x,
       y: object.y,
 
+      // Enemy, coin, powerup....
       type: object.type,
 
-      properties: props
+      properties: object.properties || {}
     })
   });
 
-  return enemies
-}
-
-function parsePowerupLayer(tmxData) {
-
-  var powerups = []
-  var layer = tmxData.layers.filter(function(l) { return l.name == 'coins' })[0]
-
-  layer.objects.forEach(function(object) {
-
-    var props = object.properties || {}
-
-    powerups.push({
-      // World coordinates
-      x: object.x,
-      y: object.y,
-
-      type: object.type,
-
-      properties: props
-    })
-  });
-
-  return powerups
+  return objects
 }
