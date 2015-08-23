@@ -15,39 +15,45 @@ function buildTiles(tmxData) {
   for (var t of tiles) {
     createTile(point(t.x * TILE_SIZE, t.y * TILE_SIZE),
                {x: t.tx, y: t.ty},
+               t.tangible,
                t.properties)
   }
 }
 
 function parseMap(tmxData) {
-  // One layer, one tileset
-  var layer = tmxData.layers[0];
-  var tileset = tmxData.tilesets[0];
 
-  var tilesetWidth = tileset.imagewidth / tileset.tilewidth;
-  var tilesetHeight = tileset.imageheight / tileset.tileheight;
+  var tileset = tmxData.tilesets[0]
+  var tilesetWidth = tileset.imagewidth / tileset.tilewidth
+  var tilesetHeight = tileset.imageheight / tileset.tileheight
 
   var tiles = []
 
-  layer.data.forEach(function(tileId, index) {
-    // Skip empty tiles
-    if (tileId === 0)
-      return
+  for (var i = 0; i < tmxData.layers.length; ++i) {
 
-    tileId -= tileset.firstgid;
+    layer = tmxData.layers[i]
+    layer.data.forEach(function(tileId, index) {
+      // Skip empty tiles
+      if (tileId === 0)
+        return
 
-    tiles.push({
-      // World coordinates
-      x: index % layer.width,
-      y: Math.floor(index / layer.height),
+      tileId -= tileset.firstgid;
 
-      // Tile coordinates on the spritesheet
-      tx: tileId % tilesetWidth,
-      ty: Math.floor(tileId / tilesetHeight),
+      tiles.push({
+        // World coordinates
+        x: index % layer.width,
+        y: Math.floor(index / layer.height),
 
-      properties: tileset.tileproperties[tileId] || {}
-    })
-  });
+        // Tile coordinates on the spritesheet
+        tx: tileId % tilesetWidth,
+        ty: Math.floor(tileId / tilesetHeight),
+
+        properties: tileset.tileproperties[tileId] || {},
+
+        // Only tiles in the main layer have bodies
+        tangible: layer.name === 'main'
+      })
+    });
+  }
 
   return tiles
 }

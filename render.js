@@ -1,5 +1,4 @@
-var DEBUG = true
-
+var DEBUG = false
 var canvas
 var ctx
 var spritesheet

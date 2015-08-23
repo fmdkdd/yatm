@@ -99,32 +99,37 @@ function createMunster(position) {
   return e
 }
 
-function createTile(position, sprite, properties) {
+function createTile(position, sprite, tangible, properties) {
   var e = createEntity()
 
   world.mask[e] =
     C_POSITION
     | C_RENDERABLE
-    | C_PHYSICS
 
   world.position[e] = point(position.x, position.y)
   world.renderable[e] = renderTile
   world.sprite[e] = {x: sprite.x, y: sprite.y}
 
-  var width = parseInt(properties.width) || TILE_SIZE
-  var height = parseInt(properties.height) || TILE_SIZE
-  var offset = {x: parseInt(properties.offsetX, 10) || 0,
-                y: parseInt(properties.offsetY, 10) || 0}
-  world.body[e] = Matter.Bodies.rectangle(
-    position.x + offset.x, position.y + offset.y,
-    width, height,
-    { isStatic: true,
-      friction: 0.5 })
 
-  world.body[e].entity = e
-  world.body[e].tileType = properties.type
+  if (tangible) {
 
-  Matter.World.add(engine.world, [world.body[e]])
+    world.mask[e] |= C_PHYSICS
+
+    var width = parseInt(properties.width) || TILE_SIZE
+    var height = parseInt(properties.height) || TILE_SIZE
+    var offset = {x: parseInt(properties.offsetX, 10) || 0,
+                  y: parseInt(properties.offsetY, 10) || 0}
+    world.body[e] = Matter.Bodies.rectangle(
+      position.x + offset.x, position.y + offset.y,
+      width, height,
+      { isStatic: true,
+        friction: 0.5 })
+
+    world.body[e].entity = e
+    world.body[e].tileType = properties.type
+
+    Matter.World.add(engine.world, [world.body[e]])
+  }
 }
 
 
