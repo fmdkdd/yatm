@@ -145,6 +145,9 @@ function renderTile(e, ctx) {
   }
 }
 
+var munsterRotation = 0
+var munsterRotationStep = 0.2
+
 function renderMunster(e, ctx) {
   if (!(world.mask[e] & C_POSITION))
     console.error('Trying to render münster without a position')
@@ -153,10 +156,9 @@ function renderMunster(e, ctx) {
   var p = body.position
   var s = world.sprite[e] || defaultSprite
 
-  var a = body.angle
-
   if (Array.isArray(s)) {
-    var i = mod(Math.floor(a / (Math.PI / s.length)), s.length)
+    var r = s.length / (2 * Math.PI)
+    var i = mod(Math.floor(munsterRotation * r), s.length)
     s = s[i]
   }
 

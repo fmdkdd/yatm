@@ -216,10 +216,14 @@ function controls() {
   var multiplier = jumping ? 0.5 : 1
 
   // Horizontal moves
-  if (keys[K_LEFT])
+  if (keys[K_LEFT]) {
     applyForce(body, point(-velocity * multiplier, 0))
-  if (keys[K_RIGHT])
+    munsterRotation -= munsterRotationStep
+  }
+  if (keys[K_RIGHT]) {
     applyForce(body, point(velocity * multiplier, 0))
+    munsterRotation += munsterRotationStep
+  }
 
   // If the jump key was just pressed...
   if (keys[K_SPACE] && justChanged[K_SPACE]) {
