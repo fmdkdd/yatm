@@ -77,13 +77,20 @@ function render() {
       {x: canvas.width / 2 / camera.zoom - (p.x + 8),
        y: canvas.height / 2 / camera.zoom - (p.y + 8)}, 50)
 
+  var screen = {x:-camera.x, y:-camera.y,
+                width: canvas.width, height: canvas.height}
+
   ctx.save()
   ctx.scale(camera.zoom, camera.zoom)
   ctx.translate(camera.x, camera.y)
 
   for (var e of getEntities(C_RENDERABLE)) {
     var r = world.renderable[e]
-    r(e, ctx)
+    p = world.position[e]
+    if (e === munster || do_boxes_collide(screen, {
+      x: p.x, y: p.y, width: TS, height: TS})) {
+      r(e, ctx)
+    }
   }
 
   ctx.restore()
