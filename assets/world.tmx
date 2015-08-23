@@ -6,6 +6,7 @@
    <properties>
     <property name="height" value="8"/>
     <property name="offsetY" value="4"/>
+    <property name="type" value="death"/>
    </properties>
   </tile>
   <tile id="23">

@@ -39,7 +39,8 @@
              "21":
                 {
                  "height":"8",
-                 "offsetY":"4"
+                 "offsetY":"4",
+                 "type":"death"
                 },
              "23":
                 {

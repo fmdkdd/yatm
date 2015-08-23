@@ -45,7 +45,8 @@ var munster;
 function initWorld(cb) {
   loadTiles(cb)
 
-  munster = createMunster(point(3264, 3280))
+  munster = createMunster(point(0,0))
+  resetMunster()
 
   // START ZOOM EFFECT
   if (do_start_zoom) {
@@ -57,6 +58,10 @@ function initWorld(cb) {
     camera_transition({zoom: 3}, 2000)
     start_zooming = true
   }
+}
+
+function resetMunster() {
+  moveBody(world.body[munster], {x: 3250, y: 3250})
 }
 
 function createMunster(position) {
@@ -87,6 +92,8 @@ function createMunster(position) {
   world.body[e] = Matter.Bodies.circle(
     position.x, position.y, 8, options)
 
+  world.body[e].entity = e
+
   Matter.World.add(engine.world, [world.body[e]])
 
   return e
@@ -111,7 +118,11 @@ function createTile(position, sprite, properties) {
   world.body[e] = Matter.Bodies.rectangle(
     position.x + offset.x, position.y + offset.y,
     width, height,
-    { isStatic: true, friction: 0.5 })
+    { isStatic: true,
+      friction: 0.5 })
+
+  world.body[e].entity = e
+  world.body[e].tileType = properties.type
 
   Matter.World.add(engine.world, [world.body[e]])
 }
@@ -131,11 +142,36 @@ function initPhysics() {
   Matter.Events.on(engine, 'collisionActive', function touchedGround(event) {
     var pair = event.pairs[0]
 
-    if (pair.bodyA === world.body[munster] && jumping) {
+    if ((pair.bodyA.entity === munster
+         || pair.bodyB.entity === munster) && jumping) {
       if (pair.collision.normal.y < -0.9)
         jumping = doubleJumping = false
     }
   })
+
+  Matter.Events.on(engine, 'collisionStart', function collisionStart(event) {
+    var pair = event.pairs[0]
+
+    testPair((a,b) => a.tileType === 'death'
+             && b.entity === munster,
+             function (a,b) {
+               resetMunster(b)
+             }, pair)
+  })
+}
+
+function testPair(test, exec, pair) {
+  if (test(pair.bodyA, pair.bodyB))
+    exec(pair.bodyA, pair.bodyB)
+  else if (test(pair.bodyB, pair.bodyA))
+    exec(pair.bodyB, pair.bodyA)
+}
+
+function moveBody(b, pos) {
+  Matter.Body.translate(b, {x: -b.position.x,
+                            y: -b.position.y})
+  Matter.Body.translate(b, pos)
+
 }
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
