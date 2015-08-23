@@ -325,6 +325,26 @@ function renderPeople(e, ctx) {
   ctx.restore()
 }
 
+function renderWings(e, ctx) {
+  var p = world.position[e]
+  var s = world.sprite[e] || defaultSprite
+
+  // if (Array.isArray(s)) {
+  //   s = s[Math.floor(frame/5 % s.length)]
+  // }
+
+  ctx.save()
+  ctx.translate(p.x, p.y)
+
+  ctx.drawImage(spritesheet,
+                s.x * TILE_SIZE, s.y * TILE_SIZE,
+                TILE_SIZE, TILE_SIZE,
+                0, 0,
+                TILE_SIZE, TILE_SIZE)
+
+  ctx.restore()
+}
+
 function renderNothing() {}
 
 function drawBoundingBox(ctx) {

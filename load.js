@@ -27,13 +27,14 @@ function build(tmxData) {
   var objects = parseObjectLayer(tmxData, 'coins')
   objects = objects.concat(parseObjectLayer(tmxData, 'enemies'))
   objects = objects.concat(parseObjectLayer(tmxData, 'people'))
+  objects = objects.concat(parseObjectLayer(tmxData, 'powerup'))
 
   for (var o of objects) {
     var factory
 
     if (o.type === 'fly' || o.type === 'worm')
       factory = createEnemy
-    else if (o.type === 'coin')
+    else if (o.type === 'coin' || o.type === 'wings')
       factory = createPowerup
     else if (o.type === 'people')
       factory = createMeanPeople

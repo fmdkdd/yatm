@@ -12,7 +12,8 @@ var C_NONE         = 0,
     C_COIN         = 1 << 7,
     C_PATROL       = 1 << 8,
     C_FLY          = 1 << 9,
-    C_WORM         = 1 << 10
+    C_WORM         = 1 << 10,
+    C_WINGS        = 1 << 11
 
 var world = {
   mask: [],
@@ -64,8 +65,14 @@ function initWorld(cb) {
     startIntroZoom()
 }
 
+var start = point(3280, 3280)
+
 function resetMunster() {
-  moveBody(world.body[munster], {x: 3280, y: 3280})
+  moveBody(world.body[munster], start)
+
+function checkpoint() {
+  var p = world.body[munster].position
+  lastCheckpoint = point(p.x, p.y)
 }
 
 function createMunster(position) {
@@ -153,18 +160,23 @@ function createPowerup(position, type, properties) {
     | C_BOUNDING_BOX
 
   if (type === 'coin') {
-    world.renderable[e] = renderCoin
     world.mask[e] |= C_COIN
+    world.renderable[e] = renderCoin
+    world.sprite[e] = [{x: 0, y: 0},
+                       {x: 1, y: 0},
+                       {x: 2, y: 0},
+                       {x: 3, y: 0}]
+  }
+  else if (type === 'wings') {
+    world.mask[e] |= C_WINGS
+    world.renderable[e] = renderWings
+    world.sprite[e] = {x:0, y:0}
   }
   else
     console.error('Unknown powerup type!', type)
 
   world.position[e] = point(position.x, position.y)
 
-  world.sprite[e] = [{x: 0, y: 0},
-                     {x: 1, y: 0},
-                     {x: 2, y: 0},
-                     {x: 3, y: 0}]
 
   var offset = {
     x: parseInt(properties.offsetX) || 0,
@@ -174,8 +186,8 @@ function createPowerup(position, type, properties) {
   world.boundingBox[e] = {
     x: position.x + offset.x,
     y: position.y + offset.y,
-    width: parseInt(properties.width, 10),
-    height: parseInt(properties.height, 10)}
+    width: parseInt(properties.width, 10) || 5,
+    height: parseInt(properties.height, 10) || 5}
 
   world.boundingBoxHit[e] = false
 
@@ -477,7 +489,7 @@ function resolveCollisions() {
 
 var collisionHandlers = []
 
-function addCollisionHandler(type1, type2, handler) {
+function onCollide(type1, type2, handler) {
   collisionHandlers.push({type1, type2, handler})
 }
 
@@ -604,21 +616,28 @@ function init() {
   initKeyListeners();
   initWorld(startLoop)
 
-  addCollisionHandler(C_MUNSTER, C_COIN, function(m, c) {
+  onCollide(C_MUNSTER, C_COIN, function(m, c) {
     sfx_play('sfx-pickup-coin')
     destroyEntity(c)
   })
 
 
-  addCollisionHandler(C_MUNSTER, C_FLY, function(m, f) {
+  onCollide(C_MUNSTER, C_FLY, function(m, f) {
     // 1. Detect fly collision
     // TODO: 2. ???
     // TODO: 3. PROFIT!
   })
 
 
-  addCollisionHandler(C_MUNSTER, C_WORM, function(m, w) {
+  onCollide(C_MUNSTER, C_WORM, function(m, w) {
     resetMunster()
+  })
+
+
+  onCollide(C_MUNSTER, C_WINGS, function(m, w) {
+    checkpoint()
+    canDoubleJump = true
+    destroyEntity(w)
   })
 }
 
