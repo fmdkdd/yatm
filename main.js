@@ -58,7 +58,7 @@ function initWorld(cb) {
 
   // START ZOOM EFFECT
   if (do_start_zoom) {
-    camera.zoom = 60
+    camera.zoom = 400
     camera_focus({
       x: world.position[munster].x + TS/2,
       y: world.position[munster].y + TS/2,
@@ -69,7 +69,7 @@ function initWorld(cb) {
 }
 
 function resetMunster() {
-  moveBody(world.body[munster], {x: 3250, y: 3250})
+  moveBody(world.body[munster], {x: 3264, y: 3280})
 }
 
 function createMunster(position) {
@@ -453,7 +453,7 @@ function sfx_play(id) {
   }
 }
 
-var channels = 2
+var channels = 4
 
 function initAudio() {
   document.getElementById('bgm').play()
@@ -485,6 +485,8 @@ function init() {
     sfx_play('sfx-pickup-coin')
     destroyEntity(c)
   })
+
+  deactivateControls()
 }
 
 function updatePhysics(dt, now) {

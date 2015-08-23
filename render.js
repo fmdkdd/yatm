@@ -61,7 +61,7 @@ function renderBackgrounds() {
   })
 }
 
-var do_start_zoom = false
+var do_start_zoom = true
 var start_zooming = false
 
 function render() {
@@ -74,7 +74,10 @@ function render() {
   // START ZOOM EFFECT ONLY ONCE
   if (start_zooming) {
     camera_focus({x: p.x + TS/2, y: p.y + TS/2})
-    if (camera.zoom === 3) start_zooming = false
+    if (camera.zoom === 3) {
+      start_zooming = false
+      activateControls()
+    }
   }
 
   else
