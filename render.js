@@ -84,8 +84,10 @@ function render() {
       {x: canvas.width / 2 / camera.zoom - (p.x + 8),
        y: canvas.height / 2 / camera.zoom - (p.y + 8)}, 50)
 
-  var screen = {x:-camera.x, y:-camera.y,
-                width: canvas.width, height: canvas.height}
+  var screen = {
+    x: -camera.x, y: -camera.y,
+    width: canvas.width / camera.zoom,
+    height: canvas.height / camera.zoom}
 
   ctx.save()
   ctx.scale(camera.zoom, camera.zoom)
@@ -111,9 +113,15 @@ function render() {
 
   if (DEBUG) {
     ctx.save()
+
     ctx.scale(camera.zoom, camera.zoom)
     ctx.translate(camera.x, camera.y)
+
     drawBoundingBox(ctx)
+
+    ctx.strokeStyle = '#11c'
+    ctx.strokeRect(screen.x, screen.y, screen.width, screen.height)
+
     ctx.restore()
   }
 
