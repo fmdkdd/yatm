@@ -57,7 +57,7 @@ function initWorld(cb) {
       x: world.position[munster].x + TS/2,
       y: world.position[munster].y + TS/2,
     })
-    camera_transition({zoom: 3}, 2000)
+    camera_transition({zoom: 3}, 7000)
     start_zooming = true
   }
 }

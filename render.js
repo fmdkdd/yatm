@@ -5,6 +5,7 @@ var ctx
 var spritesheet
 var tilesheet
 var munster_sheet
+var titleImage
 
 function initCanvas() {
   canvas = document.getElementById('canvas')
@@ -17,6 +18,7 @@ function initCanvas() {
   spritesheet = document.getElementById('spritesheet')
   tilesheet = document.getElementById('tilesheet')
   munster_sheet = document.getElementById('munster-sheet')
+  titleImage = document.getElementById('title')
 
   createBackground('hills-bg', 5000, 10, 3, 3)
   createBackground('hills2-bg', 2000, 220, 2, 2)
@@ -59,7 +61,6 @@ var do_start_zoom = true
 var start_zooming = false
 
 function render() {
-
   ctx.clearRect(0, 0, canvas.width, canvas.height)
 
   renderBackgrounds()
@@ -94,6 +95,9 @@ function render() {
   }
 
   ctx.restore()
+
+  if (start_zooming)
+    ctx.drawImage(titleImage, 5, 60, 63 * 10, 24 * 10)
 }
 
 var camera = {x: 0, y: 0, zoom: 3}
