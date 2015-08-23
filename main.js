@@ -377,6 +377,7 @@ var velocity = 0.1
 var jumpVelocity = 3
 var jumping = true
 var doubleJumping = true
+var canDoubleJump = false
 
 function applyForce(body, force) {
   Matter.Body.applyForce(body, body.position, force)
@@ -409,7 +410,7 @@ function controls() {
     }
 
     // Double jump!
-    else if (jumping === true && doubleJumping === false && body.velocity.y > 0) {
+    else if (canDoubleJump && jumping === true && doubleJumping === false && body.velocity.y > 0) {
       applyForce(body, point(0, -jumpVelocity))
       doubleJumping = true
       sfx_play('sfx-jump')
