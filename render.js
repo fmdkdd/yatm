@@ -17,12 +17,50 @@ function initCanvas() {
   spritesheet = document.getElementById('spritesheet')
   tilesheet = document.getElementById('tilesheet')
   munster_sheet = document.getElementById('munster-sheet')
+
+  createBackground('hills-bg', 400, 10, 4, 2.5)
+  createBackground('hills2-bg', 340, 90, 2, 2)
+}
+
+var backgrounds = []
+
+function createBackground(id, parallax, y, sx, sy) {
+  var img = document.querySelector('#' + id)
+  backgrounds.push({
+    img,
+    parallax,
+    y,
+    sx, sy // scaling
+  })
+}
+
+function renderBackgrounds() {
+
+  ctx.fillStyle = '#dddddd'
+  ctx.fillRect(0, 0, canvas.width, 150)
+
+  ctx.fillStyle = '#99e550'
+  ctx.fillRect(0, 150, canvas.width, canvas.height)
+
+  backgrounds.forEach(function(bg) {
+    for (var i = 0; i < 7; ++i) {
+      var r = (camera.x % bg.parallax) / bg.parallax
+      var w = bg.img.width * bg.sx
+      var h = bg.img.height * bg.sy
+      ctx.drawImage(bg.img, (i + r) * w, bg.y, w, h)
+    }
+  })
 }
 
 var do_start_zoom = false
 var start_zooming = false
 
 function render() {
+
+  ctx.clearRect(0, 0, canvas.width, canvas.height)
+
+  renderBackgrounds()
+
   var p = world.body[munster].position
 
   // START ZOOM EFFECT ONLY ONCE
@@ -35,8 +73,6 @@ function render() {
     camera_transition(
       {x: canvas.width / 2 / camera.zoom - (p.x + 8),
        y: canvas.height / 2 / camera.zoom - (p.y + 8)}, 50)
-
-  ctx.clearRect(0, 0, canvas.width, canvas.height)
 
   ctx.save()
   ctx.scale(camera.zoom, camera.zoom)
