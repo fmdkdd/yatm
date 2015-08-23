@@ -81,7 +81,10 @@
                  "name":"",
                  "properties":
                     {
-
+                     "height":"4",
+                     "offsetX":"6",
+                     "offsetY":"6",
+                     "width":"4"
                     },
                  "rotation":0,
                  "type":"coin",
@@ -96,7 +99,10 @@
                  "name":"",
                  "properties":
                     {
-
+                     "height":"4",
+                     "offsetX":"6",
+                     "offsetY":"6",
+                     "width":"4"
                     },
                  "rotation":0,
                  "type":"coin",

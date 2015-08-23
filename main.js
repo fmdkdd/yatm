@@ -7,7 +7,9 @@ var C_NONE         = 0,
     C_RENDERABLE   = 1 << 2,
     C_INPUT        = 1 << 3,
     C_PHYSICS      = 1 << 4,
-    C_SINUSOID     = 1 << 5
+    C_SINUSOID     = 1 << 5,
+    C_MUNSTER      = 1 << 6,
+    C_COIN         = 1 << 7
 
 var world = {
   mask: [],
@@ -78,6 +80,8 @@ function createMunster(position) {
     | C_RENDERABLE
     | C_INPUT
     | C_PHYSICS
+    | C_MUNSTER
+    | C_BOUNDING_BOX
 
   world.position[e] = point(position.x, position.y)
   world.renderable[e] = renderMunster
@@ -97,6 +101,9 @@ function createMunster(position) {
   }
   world.body[e] = Matter.Bodies.circle(
     position.x, position.y, 8, options)
+
+  world.boundingBox[e] = bodyToBB(world.body[e])
+  world.boundingBoxHit[e] = false
 
   world.body[e].entity = e
 
@@ -147,9 +154,12 @@ function createPowerup(position, type, properties) {
   world.mask[e] =
     C_POSITION
     | C_RENDERABLE
+    | C_BOUNDING_BOX
 
-  if (type === 'coin')
+  if (type === 'coin') {
     world.renderable[e] = renderCoin
+    world.mask[e] |= C_COIN
+  }
   else
     console.error('Unknown powerup type!', type)
 
@@ -159,6 +169,19 @@ function createPowerup(position, type, properties) {
                      {x: 1, y: 0},
                      {x: 2, y: 0},
                      {x: 3, y: 0}]
+
+  var offset = {
+    x: parseInt(properties.offsetX) || 0,
+    y: parseInt(properties.offsetY) || 0,
+  }
+
+  world.boundingBox[e] = {
+    x: position.x + offset.x,
+    y: position.y + offset.y,
+    width: parseInt(properties.width, 10),
+    height: parseInt(properties.height, 10)}
+
+  world.boundingBoxHit[e] = false
 
   return e
 }
@@ -241,6 +264,99 @@ function moveBody(b, pos) {
                             y: -b.position.y})
   Matter.Body.translate(b, pos)
 
+}
+
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// Bounding box collisions
+
+var grid = spatialHash.new(200)
+var hitQueue = []
+
+function checkCollisions() {
+  grid.clearAllCells()
+  clearCheckedPairs()
+  hitQueue.length = 0
+
+  world.boundingBox[munster] = bodyToBB(world.body[munster])
+
+  for (var e of getEntities(C_BOUNDING_BOX)) {
+    var b = world.boundingBox[e]
+    grid.insertObjectWithBoundingBox(e, b)
+    world.boundingBoxHit[e] = false
+  }
+
+  for (var objSet of grid.map.values()) {
+    var objs = Array.from(objSet)
+    for (var i = 0; i < objs.length; ++i) {
+      var e1 = objs[i]
+      var b1 = world.boundingBox[e1]
+      for (var j = i+1; j < objs.length; ++j) {
+        var e2 = objs[j]
+
+        if (alreadyChecked(e1, e2))
+          continue
+
+        var b2 = world.boundingBox[e2]
+        if (do_boxes_collide(b1, b2)) {
+          world.boundingBoxHit[e1] =  world.boundingBoxHit[e2] = true
+          hitQueue.push([e1, e2])
+          checkPair(e1, e2)
+        }
+      }
+    }
+  }
+}
+
+var checkedPairs = new Map()
+
+function alreadyChecked(e1, e2) {
+  return (checkedPairs.has(e1) && checkedPairs.get(e1).has(e2))
+    || (checkedPairs.has(e2) && checkedPairs.get(e2).has(e1))
+}
+
+function checkPair(e1, e2) {
+  if (!checkedPairs.has(e1))
+    checkedPairs.set(e1, new Set())
+  checkedPairs.get(e1).add(e2)
+}
+
+function clearCheckedPairs() {
+  for (var p of checkedPairs.values())
+    p.clear()
+}
+
+function bodyToBB(body) {
+  var b = body.parts[0].bounds
+  var w = b.max.x - b.min.x
+  var h = b.max.y - b.min.y
+  return {
+    x: b.min.x + w/2,
+    y: b.min.y + h/2,
+    width: w,
+    height: h
+  }
+}
+
+function resolveCollisions() {
+  for (var h of hitQueue) {
+    var e1 = h[0]
+    var e2 = h[1]
+    var m1 = world.mask[e1]
+    var m2 = world.mask[e2]
+
+    for (var c of collisionHandlers) {
+      if (m1 & c.type1 && m2 & c.type2)
+        c.handler(e1, e2)
+      else if (m1 & c.type2 && m2 & c.type1)
+        c.handler(e2, e1)
+    }
+  }
+}
+
+var collisionHandlers = []
+
+function addCollisionHandler(type1, type2, handler) {
+  collisionHandlers.push({type1, type2, handler})
 }
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -350,9 +466,10 @@ function init() {
   initKeyListeners();
   initWorld(startLoop)
 
-  for (var e of getEntities(C_SINUSOID)) {
-    console.log(e)
-  }
+  addCollisionHandler(C_MUNSTER, C_COIN, function(m, c) {
+    sfx_play('sfx-pickup-coin')
+    destroyEntity(c)
+  })
 }
 
 function updatePhysics(dt, now) {
@@ -376,6 +493,8 @@ function loop(now) {
   updateEnemies(dt, now)
   updateTransitions(dt, now)
   //updatePhysics(dt, now)
+  checkCollisions()
+  resolveCollisions()
 
   render()
 

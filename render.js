@@ -104,6 +104,14 @@ function render() {
     ctx.drawImage(titleImage, 5, 60, 63 * 10, 24 * 10)
 
   frame += frameStep
+
+  if (DEBUG) {
+    ctx.save()
+    ctx.scale(camera.zoom, camera.zoom)
+    ctx.translate(camera.x, camera.y)
+    drawBoundingBox(ctx)
+    ctx.restore()
+  }
 }
 
 var camera = {x: 0, y: 0, zoom: 3}
@@ -148,7 +156,7 @@ function renderTile(e, ctx) {
                 0, 0, TS, TS)
   ctx.restore()
 
-  if (DEBUG) {
+  if (DEBUG && world.mask[e] & C_PHYSICS) {
     ctx.save()
     p = world.body[e].position
     ctx.translate(p.x, p.y)
@@ -249,3 +257,13 @@ function renderCoin(e, ctx) {
 }
 
 function renderNothing() {}
+
+function drawBoundingBox(ctx) {
+  for (var e of getEntities(C_BOUNDING_BOX)) {
+    var b = world.boundingBox[e]
+    var h = world.boundingBoxHit[e]
+
+    ctx.strokeStyle = h ? '#1c1' : '#c11'
+    ctx.strokeRect(b.x, b.y, b.width, b.height)
+  }
+}
