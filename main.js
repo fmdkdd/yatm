@@ -11,7 +11,8 @@ var C_NONE         = 0,
     C_MUNSTER      = 1 << 6,
     C_COIN         = 1 << 7,
     C_PATROL       = 1 << 8,
-    C_FLY          = 1 << 9
+    C_FLY          = 1 << 9,
+    C_WORM         = 1 << 10
 
 var world = {
   mask: [],
@@ -229,9 +230,14 @@ function createWorm(position, properties) {
     | C_RENDERABLE
     | C_BOUNDING_BOX
     | C_PATROL
+    | C_WORM
 
   world.position[e] = point(position.x, position.y)
-  world.renderable[e] = renderNothing
+  world.renderable[e] = renderWorm
+  world.sprite[e] = [{x:0, y:0},
+                     {x:1, y:0}]
+  world.sprite[e].frame = Math.floor(Math.random()%2)
+  world.sprite[e].flip = !!parseInt(properties.flip, 10) || false,
   world.boundingBox[e] = {x: position.x,
                           y: position.y,
                           width: 8,
@@ -239,11 +245,11 @@ function createWorm(position, properties) {
 
   var patrol = {
     start: {
-      x: parseInt(properties.patrolStartX, 10) || 20,
+      x: parseInt(properties.patrolStartX, 10) || 0,
       y: parseInt(properties.patrolStartY, 10) || 0,
     },
     end: {
-      x: parseInt(properties.patrolEndX, 10) || 0,
+      x: parseInt(properties.patrolEndX, 10) || 20,
       y: parseInt(properties.patrolEndY, 10) || 0,
     },
   }
@@ -290,8 +296,8 @@ function updatePatrol(dt, now) {
 
     if (world.mask[e] & C_BOUNDING_BOX) {
       var b = world.boundingBox[e]
-      b.x = clamp(p.x + v.x, start.x, end.x)
-      b.y = clamp(b.y + v.y, start.y, end.y)
+      b.x = p.x + 4
+      b.y = p.y + 11
     }
 
     if (vec_length(vec_minus(p, end)) <= 1)
@@ -570,6 +576,11 @@ function init() {
     // 1. Detect fly collision
     // TODO: 2. ???
     // TODO: 3. PROFIT!
+  })
+
+
+  addCollisionHandler(C_MUNSTER, C_WORM, function(m, w) {
+    resetMunster()
   })
 }
 

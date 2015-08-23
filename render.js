@@ -8,6 +8,7 @@ var munster_sheet
 var titleImage
 var bling_sheet
 var spike_death
+var worm_sheet
 
 function initCanvas() {
   canvas = document.getElementById('canvas')
@@ -23,6 +24,7 @@ function initCanvas() {
   titleImage = document.getElementById('title')
   bling_sheet = document.getElementById('bling-sheet')
   spike_death = document.getElementById('spike-death')
+  worm_sheet = document.getElementById('worm-sheet')
 
   createBackground('hills-bg', 5000, 10, 3, 3)
   createBackground('hills2-bg', 2000, 220, 2, 2)
@@ -265,6 +267,37 @@ function renderCoin(e, ctx) {
                 TILE_SIZE, TILE_SIZE)
 
   ctx.restore()
+}
+
+function renderWorm(e, ctx) {
+  var p = world.position[e]
+  var s = world.sprite[e] || defaultSprite
+
+  var mirror = 1
+  if (s.flip) mirror *= -1
+  if (world.patrolPath[e].reverse) mirror *= -1
+
+  if (Array.isArray(s)) {
+    var i = Math.floor(s.frame++/30 % s.length)
+    s = s[i]
+    world.patrolPath[e].speed = (i)/10
+  }
+
+  ctx.save()
+  ctx.translate(p.x, p.y)
+  if (mirror === -1) {
+    ctx.scale(-1,1)
+    ctx.translate(-TS,0)
+  }
+
+  ctx.drawImage(worm_sheet,
+                s.x * TILE_SIZE, s.y * TILE_SIZE,
+                TILE_SIZE, TILE_SIZE,
+                0, 0,
+                TILE_SIZE, TILE_SIZE)
+
+  ctx.restore()
+
 }
 
 function renderNothing() {}
