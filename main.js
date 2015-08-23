@@ -379,11 +379,10 @@ function initPhysics() {
   Matter.Events.on(engine, 'collisionStart', function collisionStart(event) {
     var pair = event.pairs[0]
 
-    testPair((a,b) => a.tileType === 'death'
-             && b.entity === munster,
-             function (a,b) {
-               beginSpikeDeathAnim(a.entity)
-             }, pair)
+    testPair(
+      function (a,b) {return a.tileType === 'death' && b.entity === munster},
+      function (a,b) {beginSpikeDeathAnim(a.entity)},
+      pair)
   })
 }
 
