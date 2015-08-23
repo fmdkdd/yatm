@@ -292,6 +292,10 @@ function sfx_play(id) {
   sfx_cache[id].play()
 }
 
+function initAudio() {
+  document.getElementById('bgm').play()
+}
+
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // Entry point
 
@@ -299,6 +303,7 @@ document.addEventListener('DOMContentLoaded', init)
 
 function init() {
   initCanvas()
+  initAudio()
   initPhysics();
   initKeyListeners();
   initWorld(startLoop)
