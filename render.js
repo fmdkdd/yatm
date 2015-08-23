@@ -92,13 +92,17 @@ function render() {
   ctx.translate(camera.x, camera.y)
 
   for (var e of getEntities(C_RENDERABLE)) {
+    if (e === munster) continue // Draw munster on top of every renderable
+
     var r = world.renderable[e]
     p = world.position[e]
-    if (e === munster || do_boxes_collide(screen, {
+    if (do_boxes_collide(screen, {
       x: p.x, y: p.y, width: TS, height: TS})) {
       r(e, ctx)
     }
   }
+
+  world.renderable[munster](munster, ctx)
 
   ctx.restore()
 
