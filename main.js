@@ -56,20 +56,12 @@ function initWorld(cb) {
   munster = createMunster(point(0,0))
   resetMunster()
 
-  // START ZOOM EFFECT
-  if (do_start_zoom) {
-    camera.zoom = 400
-    camera_focus({
-      x: world.position[munster].x + TS/2,
-      y: world.position[munster].y + TS/2,
-    })
-    camera_transition({zoom: 3}, 7000)
-    start_zooming = true
-  }
+  if (doIntroZoom)
+    startIntroZoom()
 }
 
 function resetMunster() {
-  moveBody(world.body[munster], {x: 3264, y: 3280})
+  moveBody(world.body[munster], {x: 3280, y: 3280})
 }
 
 function createMunster(position) {
@@ -485,8 +477,6 @@ function init() {
     sfx_play('sfx-pickup-coin')
     destroyEntity(c)
   })
-
-  deactivateControls()
 }
 
 function updatePhysics(dt, now) {

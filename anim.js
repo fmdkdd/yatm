@@ -49,3 +49,17 @@ function renderSpikeDeathAnim(e, ctx) {
 
   ctx.restore()
 }
+
+var doIntroZoom = false
+var introZoom = false
+
+function startIntroZoom() {
+  camera.zoom = 400
+  camera_focus({
+    x: world.position[munster].x + TS/2,
+    y: world.position[munster].y + TS/2,
+  })
+  camera_transition({zoom: 3}, 7000)
+  introZoom = true
+  deactivateControls()
+}

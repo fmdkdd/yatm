@@ -61,9 +61,6 @@ function renderBackgrounds() {
   })
 }
 
-var do_start_zoom = true
-var start_zooming = false
-
 function render() {
   ctx.clearRect(0, 0, canvas.width, canvas.height)
 
@@ -71,11 +68,11 @@ function render() {
 
   var p = world.body[munster].position
 
-  // START ZOOM EFFECT ONLY ONCE
-  if (start_zooming) {
+  // INTRO ZOOM EFFECT ONLY ONCE
+  if (introZoom) {
     camera_focus({x: p.x + TS/2, y: p.y + TS/2})
     if (camera.zoom === 3) {
-      start_zooming = false
+      introZoom = false
       activateControls()
     }
   }
@@ -103,7 +100,7 @@ function render() {
 
   ctx.restore()
 
-  if (start_zooming)
+  if (introZoom)
     ctx.drawImage(titleImage, 5, 60, 63 * 10, 24 * 10)
 
   frame += frameStep
