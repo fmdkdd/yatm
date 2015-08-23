@@ -12,8 +12,10 @@ function load(cb) {
 function build(tmxData) {
 
   // Tiles
-  var tiles = parseTileLayer(tmxData, 'main', true)
+  var tiles = []
+  tiles = tiles.concat(parseTileLayer(tmxData, 'decor2', false))
   tiles = tiles.concat(parseTileLayer(tmxData, 'decor', false))
+  tiles = tiles.concat(parseTileLayer(tmxData, 'main', true))
 
   for (var t of tiles) {
     createTile(point(t.x * TILE_SIZE, t.y * TILE_SIZE),
