@@ -61,6 +61,8 @@ function renderBackgrounds() {
   })
 }
 
+var frame = 0
+
 function render() {
   ctx.clearRect(0, 0, canvas.width, canvas.height)
 
@@ -103,8 +105,6 @@ function render() {
   if (introZoom)
     ctx.drawImage(titleImage, 5, 60, 63 * 10, 24 * 10)
 
-  frame += frameStep
-
   if (DEBUG) {
     ctx.save()
     ctx.scale(camera.zoom, camera.zoom)
@@ -112,6 +112,8 @@ function render() {
     drawBoundingBox(ctx)
     ctx.restore()
   }
+
+  frame++
 }
 
 var camera = {x: 0, y: 0, zoom: 3}
@@ -233,15 +235,12 @@ function renderEnemy(e, ctx) {
 
 }
 
-var frame = 0
-var frameStep = 0.25
-
 function renderCoin(e, ctx) {
   var p = world.position[e]
   var s = world.sprite[e] || defaultSprite
 
   if (Array.isArray(s)) {
-    s = s[Math.floor(frame % s.length)]
+    s = s[Math.floor(frame/5 % s.length)]
   }
 
   ctx.save()
