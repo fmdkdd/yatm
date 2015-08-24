@@ -7,6 +7,7 @@ var tilesheet
 var munster_sheet
 var horns_sheet
 var horns_powerup
+var wings_sheet
 var meanpeople_sheet
 var titleImage
 var bling_sheet
@@ -33,6 +34,7 @@ function initCanvas() {
   munster_sheet = document.getElementById('munster-sheet')
   horns_sheet = document.getElementById('horns-sheet')
   horns_powerup = document.getElementById('horns-powerup')
+  wings_sheet = document.getElementById('wings-sheet')
   meanpeople_sheet = document.getElementById('meanpeople-sheet')
   titleImage = document.getElementById('title')
   bling_sheet = document.getElementById('bling-sheet')
@@ -261,6 +263,14 @@ function renderMunster(e, ctx) {
                   TS2, TS2,
                   -TSH, -TSH,
                   TS2, TS2)
+  }
+
+  if (canDoubleJump) {
+    ctx.drawImage(wings_sheet,
+                  s.x * 64, s.y * 64,
+                  64, 64,
+                  -24, -24,
+                  64, 64)
   }
 
   if (DEBUG) {
