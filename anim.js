@@ -65,12 +65,14 @@ function startIntroZoom() {
 }
 
 var acquireWings = false
+var climaxDuration = 1000 // heh!
 
 function startAcquireWings(w) {
   acquireWings = true
   deactivateControls(true)
   checkpoint()
   canDoubleJump = true
+  flash(255, 255, 255, 100)
   bgm.pause()
   world.mask[w] &= ~C_FLOATING
   // sfx_play('sfx-acquire-powerup')
@@ -79,5 +81,21 @@ function startAcquireWings(w) {
     destroyEntity(w)
     activateControls()
     bgm.play()
-  }, 500)
+  }, climaxDuration)
+}
+
+function startAcquireHorns(h) {
+  deactivateControls(true)
+  checkpoint()
+  hasHorns = true
+  flash(255, 255, 255, 100)
+  bgm.pause()
+  world.mask[h] &= ~C_FLOATING // ??
+  // sfx_play('sfx-acquire-powerup')
+
+  setTimeout(function() {
+    destroyEntity(h)
+    activateControls()
+    bgm.play()
+  }, climaxDuration)
 }

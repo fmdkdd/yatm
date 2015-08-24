@@ -838,18 +838,13 @@ function init() {
 
 
   onCollide(C_MUNSTER, C_WINGS, function(m, w) {
-    if (!acquireWings) {
+    if (!acquireWings)
       startAcquireWings(w)
-     flash(255, 255, 255, 100)
-    }
   })
 
 
-  onCollide(C_MUNSTER, C_HORNS, function(m, w) {
-    checkpoint()
-    hasHorns = true
-    flash(255, 255, 255, 100)
-    destroyEntity(w)
+  onCollide(C_MUNSTER, C_HORNS, function(m, h) {
+    startAcquireHorns(h)
   })
 
   onCollide(C_MUNSTER, C_CHECKPOINT, function(m, c) {
