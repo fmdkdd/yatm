@@ -442,12 +442,13 @@ function initPhysics() {
   engine.world.gravity.y = 1.4
 
   // The ground must be touched before jumps
-  Matter.Events.on(engine, 'collisionActive', function touchedGround(event) {
+  Matter.Events.on(engine, 'collisionStart', function touchedGround(event) {
     var pair = event.pairs[0]
 
     if ((pair.bodyA.entity === munster
          || pair.bodyB.entity === munster) && jumping) {
-      if (pair.collision.normal.y < -0.9)
+      console.log(pair.collision.normal.y)
+      if (pair.collision.normal.y < -0.95)
         jumping = doubleJumping = false
     }
   })
