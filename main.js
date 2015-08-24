@@ -77,8 +77,6 @@ function resetMunster() {
 
 var munsterGroup = Matter.Body.nextGroup(true)
 
-var hasHorns = true
-
 function createMunster(position) {
   var e = createEntity()
 
@@ -120,10 +118,10 @@ function createMunster(position) {
   return e
 }
 
-var scary = false // XXX for testing
+var hasHorns = false
+
 function isMunsterScary() {
-  // ??? (will pprobably depend on the acquired items)
-  return scary
+  return hasHorns
 }
 
 function createTile(position, sprite, tangible, properties) {
