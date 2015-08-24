@@ -79,6 +79,8 @@ function checkpoint() {
   lastCheckpoint = point(p.x, p.y)
 }
 
+var munsterGroup = Matter.Body.nextGroup(true)
+
 function createMunster(position) {
   var e = createEntity()
 
@@ -104,7 +106,8 @@ function createMunster(position) {
     friction: 0.8,
     frictionAir: 0.075,
     restitution: 0.2,
-    density: 0.5
+    density: 0.5,
+    groupId: munsterGroup
   }
   world.body[e] = Matter.Bodies.circle(
     position.x, position.y, 8, options)
@@ -651,7 +654,6 @@ function controls() {
   // If the jump key was just pressed...
   if (keys[K_SPACE] && justChanged[K_SPACE]) {
 
-    // Jump
     if (jumping === false ) {
       applyForce(body, point(0, -jumpVelocity))
       jumping = true
@@ -670,9 +672,10 @@ function controls() {
   justChanged = {}
 }
 
-function deactivateControls() {
+function deactivateControls(sleep) {
   world.mask[munster] &= ~C_INPUT
-  Matter.Sleeping.set(world.body[munster], true)
+  if (sleep)
+    Matter.Sleeping.set(world.body[munster], true)
 }
 
 function activateControls() {
@@ -733,6 +736,20 @@ function init() {
     // 1. Detect fly collision
     // TODO: 2. ???
     // TODO: 3. PROFIT!
+
+    flash(0.1)
+    deactivateControls(false)
+
+    // Throw in the air
+    var dir = vec_unit(vec_minus(world.body[m].position, world.position[f]))
+    dir.y = -0.4
+    applyForce(world.body[m], dir)
+
+
+    setTimeout(function() {
+      resetMunster()
+      activateControls()
+    }, 2000)
   })
 
   onCollide(C_MUNSTER, C_WORM, function(m, w) {

@@ -18,6 +18,7 @@ function initCanvas() {
   canvas.height = 400
 
   ctx = canvas.getContext('2d')
+
   // Pixel goodness
   ctx.imageSmoothingEnabled
     = ctx.webkitImageSmoothingEnabled
@@ -74,7 +75,20 @@ function renderBackgrounds() {
 
 var frame = 0
 
+var flashNextFrame = false
+function flash(frames) {
+  flashNextFrame = true
+}
+
 function render() {
+
+  if (flashNextFrame) {
+    ctx.fillStyle = '#ffffff'
+    ctx.fillRect(0, 0, canvas.width, canvas.height)
+    flashNextFrame = false
+    return
+  }
+
   ctx.clearRect(0, 0, canvas.width, canvas.height)
 
   renderBackgrounds()

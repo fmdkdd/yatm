@@ -13,7 +13,7 @@ function beginSpikeDeathAnim(spike) {
   world.renderable[spike] = renderSpikeDeathAnim
   world.renderable[munster] = renderNothing
 
-  deactivateControls()
+  deactivateControls(true)
 }
 
 function renderSpikeDeathAnim(e, ctx) {
@@ -61,5 +61,5 @@ function startIntroZoom() {
   })
   camera_transition({zoom: 3}, 7000)
   introZoom = true
-  deactivateControls()
+  deactivateControls(true)
 }
