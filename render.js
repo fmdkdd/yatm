@@ -18,7 +18,12 @@ function initCanvas() {
   canvas.height = 400
 
   ctx = canvas.getContext('2d')
-  ctx.imageSmoothingEnabled = false // pixel goodness
+  // Pixel goodness
+  ctx.imageSmoothingEnabled
+    = ctx.webkitImageSmoothingEnabled
+    = ctx.mozImageSmoothingEnabled
+    = ctx.msImageSmoothingEnabled
+    = false
 
   spritesheet = document.getElementById('spritesheet')
   tilesheet = document.getElementById('tilesheet')
