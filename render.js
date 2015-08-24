@@ -6,6 +6,7 @@ var spritesheet
 var tilesheet
 var munster_sheet
 var horns_sheet
+var horns_powerup
 var meanpeople_sheet
 var titleImage
 var bling_sheet
@@ -31,6 +32,7 @@ function initCanvas() {
   tilesheet = document.getElementById('tilesheet')
   munster_sheet = document.getElementById('munster-sheet')
   horns_sheet = document.getElementById('horns-sheet')
+  horns_powerup = document.getElementById('horns-powerup')
   meanpeople_sheet = document.getElementById('meanpeople-sheet')
   titleImage = document.getElementById('title')
   bling_sheet = document.getElementById('bling-sheet')
@@ -413,6 +415,29 @@ function renderWings(e, ctx) {
                 TILE_SIZE, TILE_SIZE,
                 0, 0,
                 TILE_SIZE, TILE_SIZE)
+
+  ctx.restore()
+}
+
+function renderHorns(e, ctx) {
+  var p = world.position[e]
+
+  ctx.save()
+  ctx.translate(p.x, p.y)
+
+  // Gradient
+  var r = 80
+  var powerUpGradient = ctx.createRadialGradient(TS, TS, 0, TS, TS, TS2)
+  powerUpGradient.addColorStop(0, 'rgba(255,255,255,0.9)')
+  powerUpGradient.addColorStop(0.5, 'rgba(255,255,255,0.6)')
+  powerUpGradient.addColorStop(1, 'rgba(255,255,255,0)')
+  ctx.beginPath();
+  ctx.arc(r/2, r/2, r, 0, 2 * Math.PI);
+  ctx.fillStyle = powerUpGradient;
+  ctx.fill();
+
+  // Picture
+  ctx.drawImage(horns_powerup, 0, 0, 32, 32)
 
   ctx.restore()
 }

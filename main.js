@@ -16,7 +16,9 @@ var C_NONE         = 0,
     C_MEANPEOPLE   = 1 << 12,
     C_TEXT         = 1 << 13,
     C_PATROL_SIN   = 1 << 14,
-    C_CHECKPOINT   = 1 << 15
+    C_CHECKPOINT   = 1 << 15,
+    C_HORNS        = 1 << 16,
+    C_FLOATING     = 1 << 17
 
 var world = {
   mask: [],
@@ -27,7 +29,8 @@ var world = {
   sprite: [],                   // {x,y} coordinates into the spritesheet
   body: [],                     // Rigid body subject to the physics simulation
   patrolPath: [],
-  text: []
+  text: [],
+  floating: []
 }
 
 function createEntity() {
@@ -211,16 +214,29 @@ function createPowerup(position, type, properties) {
                        {x: 2, y: 0},
                        {x: 3, y: 0}]
   }
-  else if (type === 'wings') {
-    world.mask[e] |= C_WINGS
-    world.renderable[e] = renderWings
-    world.sprite[e] = {x:0, y:0}
+  else if (type === 'wings' || type === 'horns') {
+
+    if (name === 'wings') {
+      world.mask[e] |= C_WINGS
+      world.renderable[e] = renderWings
+    }
+    else {
+      world.mask[e] |= C_HORNS
+      world.renderable[e] = renderHorns
+    }
+
+    world.mask[e] |= C_FLOATING
+
+    world.floating[e] = {
+      initialPos: point(position.x, position.y),
+      speed: 0.002,
+      amplitude: 5
+    }
   }
   else
     console.error('Unknown powerup type!', type)
 
   world.position[e] = point(position.x, position.y)
-
 
   var offset = {
     x: parseInt(properties.offsetX) || 0,
@@ -236,6 +252,14 @@ function createPowerup(position, type, properties) {
   world.boundingBoxHit[e] = false
 
   return e
+}
+
+function updateFloating(dt, now) {
+  for (var e of getEntities(C_FLOATING)) {
+    var f = world.floating[e]
+    world.position[e] = point(f.initialPos.x,
+                              f.initialPos.y + Math.sin(now * f.speed) * f.amplitude)
+  }
 }
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -799,6 +823,13 @@ function init() {
     destroyEntity(w)
   })
 
+
+  onCollide(C_MUNSTER, C_HORNS, function(m, w) {
+    checkpoint()
+    hasHorns = true
+    destroyEntity(w)
+  })
+
   onCollide(C_MUNSTER, C_CHECKPOINT, function(m, c) {
     checkpoint(c)
   })
@@ -825,6 +856,7 @@ function loop(now) {
   updatePatrol(dt, now)
   updateMeanPeople(dt, now)
   updateTransitions(dt, now)
+  updateFloating(dt, now)
   //updatePhysics(dt, now)
   checkCollisions()
   resolveCollisions()

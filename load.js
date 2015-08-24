@@ -36,7 +36,7 @@ function build(tmxData) {
 
     if (o.type === 'fly' || o.type === 'worm')
       factory = createEnemy
-    else if (o.type === 'coin' || o.type === 'wings')
+    else if (o.type === 'coin' || o.type === 'wings' || o.type === 'horns')
       factory = createPowerup
     else if (o.type === 'people')
       factory = createMeanPeople

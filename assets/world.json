@@ -637,7 +637,7 @@
                  "type":"coin",
                  "visible":true,
                  "width":0,
-                 "x":2361.33333333333,
+                 "x":2351.58333333333,
                  "y":2495.33333333333
                 }, 
                 {
@@ -655,7 +655,7 @@
                  "type":"coin",
                  "visible":true,
                  "width":0,
-                 "x":2361,
+                 "x":2351.25,
                  "y":2513.33333333333
                 }, 
                 {
@@ -673,8 +673,8 @@
                  "type":"coin",
                  "visible":true,
                  "width":0,
-                 "x":2344,
-                 "y":2597
+                 "x":2335.25,
+                 "y":2617.5
                 }, 
                 {
                  "height":0,
@@ -691,26 +691,8 @@
                  "type":"coin",
                  "visible":true,
                  "width":0,
-                 "x":2344,
-                 "y":2613
-                }, 
-                {
-                 "height":0,
-                 "id":76,
-                 "name":"",
-                 "properties":
-                    {
-                     "height":"4",
-                     "offsetX":"6",
-                     "offsetY":"6",
-                     "width":"4"
-                    },
-                 "rotation":0,
-                 "type":"coin",
-                 "visible":true,
-                 "width":0,
-                 "x":2344,
-                 "y":2629.33333333333
+                 "x":2335.25,
+                 "y":2633.5
                 }, 
                 {
                  "height":0,
@@ -1026,6 +1008,36 @@
                  "width":10.25,
                  "x":5187,
                  "y":3109
+                }, 
+                {
+                 "height":10.5,
+                 "id":102,
+                 "name":"",
+                 "properties":
+                    {
+
+                    },
+                 "rotation":0,
+                 "type":"horns",
+                 "visible":true,
+                 "width":10.25,
+                 "x":1684.375,
+                 "y":1891
+                }, 
+                {
+                 "height":10.5,
+                 "id":103,
+                 "name":"",
+                 "properties":
+                    {
+
+                    },
+                 "rotation":0,
+                 "type":"horns",
+                 "visible":true,
+                 "width":10.25,
+                 "x":3136.875,
+                 "y":3265.75
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -1181,7 +1193,7 @@
          "x":0,
          "y":0
         }],
- "nextobjectid":102,
+ "nextobjectid":104,
  "orientation":"orthogonal",
  "properties":
     {
