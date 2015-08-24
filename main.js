@@ -769,6 +769,7 @@ function init() {
     // TODO: 3. PROFIT!
 
     flash(0.1)
+    sfx_play('sfx-hit')
     deactivateControls(false)
 
     // Throw in the air
