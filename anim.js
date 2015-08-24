@@ -75,7 +75,7 @@ function startAcquireWings(w) {
   flash(255, 255, 255, 100)
   bgm.pause()
   world.mask[w] &= ~C_FLOATING
-  // sfx_play('sfx-acquire-powerup')
+  sfx_play('sfx-pickup-powerup')
 
   setTimeout(function() {
     destroyEntity(w)
@@ -84,14 +84,16 @@ function startAcquireWings(w) {
   }, climaxDuration)
 }
 
+var acquireHorns = false
 function startAcquireHorns(h) {
+  acquireHorns = true
   deactivateControls(true)
   checkpoint()
   hasHorns = true
   flash(255, 255, 255, 100)
   bgm.pause()
   world.mask[h] &= ~C_FLOATING // ??
-  // sfx_play('sfx-acquire-powerup')
+  sfx_play('sfx-pickup-powerup')
 
   setTimeout(function() {
     destroyEntity(h)

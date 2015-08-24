@@ -794,6 +794,9 @@ function initAudio() {
   for (a of sfx_cache['sfx-pickup-coin'])
     a.volume = 0.15
 
+  for (a of sfx_cache['sfx-pickup-powerup'])
+    a.volume = 0.3
+
   for (a of sfx_cache['sfx-hit'])
     a.volume = 0.15
 }
@@ -855,7 +858,8 @@ function init() {
 
 
   onCollide(C_MUNSTER, C_HORNS, function(m, h) {
-    startAcquireHorns(h)
+    if (!acquireHorns)
+      startAcquireHorns(h)
   })
 
   onCollide(C_MUNSTER, C_CHECKPOINT, function(m, c) {
