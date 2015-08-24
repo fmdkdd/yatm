@@ -10,6 +10,7 @@ var titleImage
 var bling_sheet
 var spike_death
 var worm_sheet
+var fly_sheet
 
 function initCanvas() {
   canvas = document.getElementById('canvas')
@@ -27,6 +28,7 @@ function initCanvas() {
   bling_sheet = document.getElementById('bling-sheet')
   spike_death = document.getElementById('spike-death')
   worm_sheet = document.getElementById('worm-sheet')
+  fly_sheet = document.getElementById('fly-sheet')
 
   createBackground('hills-bg', 5000, 10, 3, 3)
   createBackground('hills2-bg', 2000, 220, 2, 2)
@@ -238,15 +240,23 @@ function renderMunster(e, ctx) {
 
 }
 
-function renderEnemy(e, ctx) {
-
+function renderFly(e, ctx) {
   var p = world.position[e]
+  var s = world.sprite[e] || defaultSprite
+
+  s = s[Math.floor(frame/3 % s.length)]
 
   ctx.save()
   ctx.translate(p.x, p.y)
 
-  ctx.fillStyle = '#ff0000'
-  ctx.fillRect(0, 0, 10, 10)
+  if (!world.patrolPath[e].reverse)
+    ctx.scale(-1, 1)
+
+  ctx.drawImage(fly_sheet,
+                s.x * TILE_SIZE, s.y * TILE_SIZE,
+                TILE_SIZE, TILE_SIZE,
+                -8, 0,
+                TILE_SIZE, TILE_SIZE)
 
   ctx.restore()
 

@@ -7,7 +7,6 @@ var C_NONE         = 0,
     C_RENDERABLE   = 1 << 2,
     C_INPUT        = 1 << 3,
     C_PHYSICS      = 1 << 4,
-    C_SINUSOID     = 1 << 5,
     C_MUNSTER      = 1 << 6,
     C_COIN         = 1 << 7,
     C_PATROL       = 1 << 8,
@@ -25,7 +24,6 @@ var world = {
   renderable: [],               // Function to render the entity
   sprite: [],                   // {x,y} coordinates into the spritesheet
   body: [],                     // Rigid body subject to the physics simulation
-  sinusoid: [],
   patrolPath: [],
   text: []
 }
@@ -220,18 +218,24 @@ function createFly(position, properties) {
   world.mask[e] =
     C_POSITION
     | C_RENDERABLE
-    | C_SINUSOID
     | C_BOUNDING_BOX
+    | C_PATROL
     | C_FLY
 
-  world.renderable[e] = renderEnemy
+  world.renderable[e] = renderFly
+  world.sprite[e] = [{x:0, y:0},
+                     {x:1, y:0}]
 
   world.position[e] = point(position.x, position.y)
-  world.sinusoid[e] =  {
-    start: point(position.x, position.y),
-    to: point(position.x + parseInt(properties.span), position.y),
-    amplitude: parseInt(properties.amplitude),
-    duration: parseInt(properties.duration)
+
+  var right = parseFloat(properties.right) || 100
+  var speed = parseFloat(properties.speed) || 10
+  var amplitude = parseFloat(properties.amplitude) || 5 // TODO use this
+
+  world.patrolPath[e] = {
+    start: position,
+    end: vec_plus(position, point(right, 0)),
+    speed: speed
   }
 
   world.boundingBox[e] = {
@@ -283,23 +287,6 @@ function createWorm(position, properties) {
   }
 
   return e
-}
-
-function updateSinusoid(dt, now) {
-  for (var e of getEntities(C_SINUSOID)) {
-    var sin = world.sinusoid[e]
-    var r = (now % sin.duration) / sin.duration
-    var x = r < 0.5 ?
-      sin.start.x + r * (sin.to.x - sin.start.x) :
-      sin.to.x + r * (sin.start.x - sin.to.x)
-    var y = sin.start.y + Math.sin(x) * sin.amplitude;
-    world.position[e] = point(x, y)
-
-    if (world.mask[e] & C_BOUNDING_BOX) {
-      world.boundingBox[e].x = x
-      world.boundingBox[e].y = y
-    }
-  }
 }
 
 function updatePatrol(dt, now) {
@@ -379,8 +366,8 @@ var meanMessages = [
   'HA. HA. HA.',
   'You\'re cheese.',
   'You\'re no monster.',
-  'That`\'s absurd',
-  'Ho homme, you are a cheese'
+  'That\'s absurd.',
+  'Go home, you are a cheese.'
 ]
 
 var scaredMessages = [
@@ -392,7 +379,8 @@ var scaredMessages = [
   'RUN RUN RUN!',
   '#@?€!',
   'THIS IS A NIGHTMARE',
-  'HOLY CAMEMBERT!'
+  'HOLY CAMEMBERT!',
+  ':('
 ]
 
 function pickMessage(messages) {
@@ -746,7 +734,6 @@ function loop(now) {
   lastFrameTime = now
 
   controls();
-  updateSinusoid(dt, now)
   updatePatrol(dt, now)
   updateMeanPeople(dt, now)
   updateTransitions(dt, now)

@@ -56,9 +56,9 @@
                  "name":"",
                  "properties":
                     {
-                     "amplitude":"16",
-                     "duration":"10000",
-                     "span":"128"
+                     "amplitude":"5",
+                     "right":"70",
+                     "speed":"0.25"
                     },
                  "rotation":0,
                  "type":"fly",
@@ -66,24 +66,6 @@
                  "width":25.5,
                  "x":3121.25,
                  "y":3267.25
-                }, 
-                {
-                 "ellipse":true,
-                 "height":22.5,
-                 "id":11,
-                 "name":"",
-                 "properties":
-                    {
-                     "amplitude":"16",
-                     "duration":"10000",
-                     "span":"100"
-                    },
-                 "rotation":0,
-                 "type":"fly",
-                 "visible":true,
-                 "width":25.5,
-                 "x":2828.75,
-                 "y":2860.25
                 }, 
                 {
                  "ellipse":true,
