@@ -8,6 +8,7 @@ var munster_sheet
 var horns_sheet
 var horns_powerup
 var wings_sheet
+var wingflap
 var meanpeople_sheet
 var titleImage
 var bling_sheet
@@ -35,6 +36,7 @@ function initCanvas() {
   horns_sheet = document.getElementById('horns-sheet')
   horns_powerup = document.getElementById('horns-powerup')
   wings_sheet = document.getElementById('wings-sheet')
+  wingflap = document.getElementById('wingflap')
   meanpeople_sheet = document.getElementById('meanpeople-sheet')
   titleImage = document.getElementById('title')
   bling_sheet = document.getElementById('bling-sheet')
@@ -233,6 +235,8 @@ function renderTile(e, ctx) {
 
 var munsterRotation = 0
 var munsterRotationStep = 0.2
+var SHOW_WINGS_ON_MUNSTER = true
+var SHOW_WINGS_IN_AIR = true
 
 function renderMunster(e, ctx) {
   if (!(world.mask[e] & C_POSITION))
@@ -251,26 +255,46 @@ function renderMunster(e, ctx) {
   ctx.save()
   ctx.translate(p.x, p.y)
 
+  // Wings
+  if (canDoubleJump) {
+
+    if (!jumping && SHOW_WINGS_ON_MUNSTER) {
+      ctx.drawImage(wings_sheet,
+                    s.x * 64, s.y * 64,
+                    64, 64,
+                    -24, -24,
+                    64, 64)
+    }
+    else if (jumping && !doubleJumping && SHOW_WINGS_IN_AIR) {
+      ctx.drawImage(wingflap,
+              0, 0,
+              64, 32,
+              -24, -8,
+              64, 32)
+    }
+    else if (doubleJumping && SHOW_WINGS_IN_AIR) {
+      ctx.drawImage(wingflap,
+              64, 0,
+              64, 32,
+              -24, -8,
+              64, 32)
+    }
+  }
+
+  // Body
   ctx.drawImage(munster_sheet,
                 s.x * TILE_SIZE, s.y * TILE_SIZE,
                 TILE_SIZE, TILE_SIZE,
                 0, 0,
                 TILE_SIZE, TILE_SIZE)
 
+  // Horns
   if (hasHorns) {
     ctx.drawImage(horns_sheet,
                   s.x * TS2, s.y * TS2,
                   TS2, TS2,
                   -TSH, -TSH,
                   TS2, TS2)
-  }
-
-  if (canDoubleJump) {
-    ctx.drawImage(wings_sheet,
-                  s.x * 64, s.y * 64,
-                  64, 64,
-                  -24, -24,
-                  64, 64)
   }
 
   if (DEBUG) {
