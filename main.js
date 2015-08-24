@@ -14,7 +14,8 @@ var C_NONE         = 0,
     C_WORM         = 1 << 10,
     C_WINGS        = 1 << 11,
     C_MEANPEOPLE   = 1 << 12,
-    C_TEXT         = 1 << 13
+    C_TEXT         = 1 << 13,
+    C_PATROL_SIN   = 1 << 14
 
 var world = {
   mask: [],
@@ -219,7 +220,7 @@ function createFly(position, properties) {
     C_POSITION
     | C_RENDERABLE
     | C_BOUNDING_BOX
-    | C_PATROL
+    | C_PATROL_SIN
     | C_FLY
 
   world.renderable[e] = renderFly
@@ -230,12 +231,15 @@ function createFly(position, properties) {
 
   var right = parseFloat(properties.right) || 100
   var speed = parseFloat(properties.speed) || 10
-  var amplitude = parseFloat(properties.amplitude) || 5 // TODO use this
+  var amplitude = parseFloat(properties.amplitude) || 15
+  var frequency = parseFloat(properties.frequency) || 10
 
   world.patrolPath[e] = {
     start: position,
     end: vec_plus(position, point(right, 0)),
-    speed: speed
+    speed: speed,
+    amplitude: amplitude,
+    frequency: frequency
   }
 
   world.boundingBox[e] = {
@@ -310,6 +314,32 @@ function updatePatrol(dt, now) {
     }
 
     if (vec_length(vec_minus(p, end)) <= 1)
+      path.reverse = !path.reverse
+  }
+
+  // Similar to C_PATROL, with vertical modulation
+  for (var e of getEntities(C_PATROL_SIN)) {
+    var path = world.patrolPath[e]
+    var p = world.position[e]
+
+    var start = path.reverse ? path.end : path.start
+    var end = path.reverse ? path.start : path.end
+
+    var v = vec_unit(vec_minus(end, start))
+    v = vec_mult(v, path.speed)
+
+    p.x = clamp(p.x + v.x, start.x, end.x)
+
+    var progress = vec_length(vec_minus(p, start)) / vec_length(vec_minus(end, start))
+    p.y = path.start.y + Math.sin(now*0.01) * path.amplitude
+
+    if (world.mask[e] & C_BOUNDING_BOX) {
+      var b = world.boundingBox[e]
+      b.x = p.x - 4
+      b.y = p.y + 3
+    }
+    //if (e==6409)console.log(progress)
+    if (progress > 0.99)
       path.reverse = !path.reverse
   }
 }
@@ -443,14 +473,13 @@ function initPhysics() {
 
   // The ground must be touched before jumps
   Matter.Events.on(engine, 'collisionStart', function touchedGround(event) {
-    var pair = event.pairs[0]
+    if (jumping === false)
+      return
 
-    if ((pair.bodyA.entity === munster
-         || pair.bodyB.entity === munster) && jumping) {
-      console.log(pair.collision.normal.y)
-      if (pair.collision.normal.y < -0.95)
-        jumping = doubleJumping = false
-    }
+    if(event.pairs.some(function(pair) {
+      return pair.bodyA.entity === munster && vec_unit(pair.collision.normal).y < -0.95
+    }))
+      jumping = doubleJumping = false
   })
 
   Matter.Events.on(engine, 'collisionStart', function collisionStart(event) {
@@ -703,7 +732,6 @@ function init() {
     // TODO: 2. ???
     // TODO: 3. PROFIT!
   })
-
 
   onCollide(C_MUNSTER, C_WORM, function(m, w) {
     resetMunster()
