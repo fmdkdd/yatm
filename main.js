@@ -68,6 +68,7 @@ function initWorld(cb) {
 }
 
 var start = point(3280, 3280)
+//start = point(112*16, 138*16)
 
 function resetMunster() {
   moveBody(world.body[munster], start)
@@ -397,7 +398,8 @@ var meanMessages = [
   'You\'re cheese.',
   'You\'re no monster.',
   'That\'s absurd.',
-  'Go home, you are a cheese.'
+  'Go home, you are a cheese.',
+  'You look like like Pac-Man...'
 ]
 
 var scaredMessages = [
