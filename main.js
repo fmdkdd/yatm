@@ -72,7 +72,7 @@ function initWorld(cb) {
 }
 
 var start = lastCheckpoint = point(3280, 3280)
-//start = point(112*16, 138*16)
+//start = lastCheckpoint = point(141*16, 137*16)
 
 function resetMunster() {
   moveBody(world.body[munster], lastCheckpoint)
@@ -124,7 +124,7 @@ function createMunster(position) {
 var hasHorns = false
 
 function isMunsterScary() {
-  return hasHorns || canDoubleJump
+  return hasHorns // || canDoubleJump
 }
 
 function createTile(position, sprite, tangible, properties) {
@@ -235,13 +235,21 @@ function createPowerup(position, type, properties) {
     if (type === 'wings') {
       world.mask[e] |= C_WINGS
       world.renderable[e] = renderWings
+
+      world.text[e] = [
+        'BAT WINGS',
+        'Fly high']
     }
     else {
       world.mask[e] |= C_HORNS
-      world.renderable[e] = renderHorns
+      world.renderable[e] = renderPowerup
+
+      world.text[e] = [
+        'DEMON HORNS',
+        'Instill fear']
     }
 
-    world.mask[e] |= C_FLOATING
+    world.mask[e] |= C_FLOATING | C_TEXT
 
     world.floating[e] = {
       initialPos: point(position.x, position.y),

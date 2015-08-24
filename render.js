@@ -1,4 +1,4 @@
-var DEBUG = true
+var DEBUG = false
 
 var canvas
 var ctx
@@ -128,7 +128,7 @@ function render() {
     var r = world.renderable[e]
     p = world.position[e]
     if (do_boxes_collide(screen, {
-      x: p.x, y: p.y, width: TS, height: TS})) {
+      x: p.x, y: p.y, width: TS2, height: TS2})) {
       r(e, ctx)
     }
   }
@@ -415,7 +415,7 @@ function renderWings(e, ctx) {
   ctx.restore()
 }
 
-function renderHorns(e, ctx) {
+function renderPowerup(e, ctx) {
   var p = world.position[e]
 
   ctx.save()
@@ -434,6 +434,22 @@ function renderHorns(e, ctx) {
 
   // Picture
   ctx.drawImage(horns_powerup, 0, 0, 32, 32)
+
+  // Text
+  var t = world.text[e]
+  if (t) {
+    var main = t[0]
+    var sub = t[1]
+
+    ctx.fillStyle = '#4f2f09'
+
+    ctx.font = '7px Pixels'
+    var metrics = ctx.measureText(main)
+    ctx.fillText(main, -metrics.width/4, -10)
+
+    ctx.font = '5px Pixels'
+    ctx.fillText(sub, metrics.width/3, -2)
+  }
 
   ctx.restore()
 }
