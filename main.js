@@ -124,7 +124,7 @@ function createMunster(position) {
 var hasHorns = false
 
 function isMunsterScary() {
-  return hasHorns
+  return hasHorns || canDoubleJump
 }
 
 function createTile(position, sprite, tangible, properties) {
@@ -206,6 +206,8 @@ function createPowerup(position, type, properties) {
     | C_RENDERABLE
     | C_BOUNDING_BOX
 
+  world.position[e] = point(position.x, position.y)
+
   if (type === 'coin') {
     world.mask[e] |= C_COIN
     world.renderable[e] = renderCoin
@@ -213,10 +215,24 @@ function createPowerup(position, type, properties) {
                        {x: 1, y: 0},
                        {x: 2, y: 0},
                        {x: 3, y: 0}]
+
+    var offset = {
+      x: parseInt(properties.offsetX) || 0,
+      y: parseInt(properties.offsetY) || 0,
+    }
+
+    world.boundingBox[e] = {
+      x: position.x + offset.x,
+      y: position.y + offset.y,
+      width: parseInt(properties.width, 10) || 5,
+      height: parseInt(properties.height, 10) || 5}
+
+    world.boundingBoxHit[e] = false
   }
+
   else if (type === 'wings' || type === 'horns') {
 
-    if (name === 'wings') {
+    if (type === 'wings') {
       world.mask[e] |= C_WINGS
       world.renderable[e] = renderWings
     }
@@ -232,22 +248,15 @@ function createPowerup(position, type, properties) {
       speed: 0.002,
       amplitude: 5
     }
+
+    world.boundingBox[e] = {
+      x: position.x,
+      y: position.y,
+      width: 32,
+      height: 32}
   }
   else
     console.error('Unknown powerup type!', type)
-
-  world.position[e] = point(position.x, position.y)
-
-  var offset = {
-    x: parseInt(properties.offsetX) || 0,
-    y: parseInt(properties.offsetY) || 0,
-  }
-
-  world.boundingBox[e] = {
-    x: position.x + offset.x,
-    y: position.y + offset.y,
-    width: parseInt(properties.width, 10) || 5,
-    height: parseInt(properties.height, 10) || 5}
 
   world.boundingBoxHit[e] = false
 
@@ -257,8 +266,11 @@ function createPowerup(position, type, properties) {
 function updateFloating(dt, now) {
   for (var e of getEntities(C_FLOATING)) {
     var f = world.floating[e]
+
     world.position[e] = point(f.initialPos.x,
                               f.initialPos.y + Math.sin(now * f.speed) * f.amplitude)
+
+    world.boundingBox[e].y = world.position[e].y
   }
 }
 

@@ -1,4 +1,4 @@
-var DEBUG = false
+var DEBUG = true
 
 var canvas
 var ctx
@@ -406,6 +406,7 @@ function renderWings(e, ctx) {
   // if (Array.isArray(s)) {
   //   s = s[Math.floor(frame/5 % s.length)]
   // }
+  console.log(1)
 
   ctx.save()
   ctx.translate(p.x, p.y)
