@@ -265,7 +265,22 @@ function renderMunster(e, ctx) {
                     -24, -24,
                     64, 64)
     }
-    else if (jumping && !doubleJumping && SHOW_WINGS_IN_AIR) {
+
+    if (jumping && !doubleJumping && frame%20<10) {
+      ctx.drawImage(wingflap,
+              0, 0,
+              64, 32,
+              -24, -8,
+              64, 32)
+    }
+    else if (jumping && !doubleJumping || doubleJumping) {
+      ctx.drawImage(wingflap,
+              64, 0,
+              64, 32,
+              -24, -8,
+              64, 32)
+    }
+    /*else if (jumping && !doubleJumping && SHOW_WINGS_IN_AIR) {
       ctx.drawImage(wingflap,
               0, 0,
               64, 32,
@@ -278,7 +293,7 @@ function renderMunster(e, ctx) {
               64, 32,
               -24, -8,
               64, 32)
-    }
+    }*/
   }
 
   // Body

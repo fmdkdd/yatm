@@ -746,7 +746,7 @@ function controls() {
     else if (canDoubleJump && jumping === true && doubleJumping === false && body.velocity.y > 0) {
       applyForce(body, point(0, -jumpVelocity))
       doubleJumping = true
-      sfx_play('sfx-jump')
+      sfx_play('sfx-flap')
     }
   }
 
