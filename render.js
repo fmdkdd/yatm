@@ -79,19 +79,21 @@ function renderBackgrounds() {
 
 var frame = 0
 
-var flashNextFrame = false
-function flash(frames) {
-  flashNextFrame = true
+var currentFlash = null
+
+function flash(r, g, b, frames) {
+  if (currentFlash)
+    return
+
+  currentFlash = {
+    color: [r,g,b],
+    colorText: 'rgba(' + r + ',' + g + ',' + b + ',',
+    frames,
+    current: 0
+  }
 }
 
 function render() {
-
-  if (flashNextFrame) {
-    ctx.fillStyle = '#ffffff'
-    ctx.fillRect(0, 0, canvas.width, canvas.height)
-    flashNextFrame = false
-    return
-  }
 
   ctx.clearRect(0, 0, canvas.width, canvas.height)
 
@@ -152,6 +154,18 @@ function render() {
     ctx.strokeRect(screen.x, screen.y, screen.width, screen.height)
 
     ctx.restore()
+  }
+
+  // FLASH
+  if (currentFlash) {
+    ++currentFlash.current
+
+    var alpha = 1 - (currentFlash.current / currentFlash.frames)
+    ctx.fillStyle = currentFlash.colorText + alpha + ')'
+    ctx.fillRect(0, 0, canvas.width, canvas.height)
+
+    if (currentFlash.frames <= currentFlash.current)
+      currentFlash = null
   }
 
   frame++

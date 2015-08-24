@@ -812,7 +812,7 @@ function init() {
     // TODO: 2. ???
     // TODO: 3. PROFIT!
 
-    flash(0.1)
+    flash(255, 255, 255, 5)
     sfx_play('sfx-hit')
     deactivateControls(false)
 
@@ -846,6 +846,7 @@ function init() {
   onCollide(C_MUNSTER, C_HORNS, function(m, w) {
     checkpoint()
     hasHorns = true
+    flash(255, 255, 255, 100)
     destroyEntity(w)
   })
 
