@@ -785,7 +785,11 @@ function init() {
   })
 
   onCollide(C_MUNSTER, C_WORM, function(m, w) {
-    resetMunster()
+    // Throw in the air
+    var dir = vec_unit(vec_minus(world.body[m].position, world.position[w]))
+    dir.y += -1
+    dir = vec_mult(dir, 0.25)
+    applyForce(world.body[m], dir)
   })
 
 
