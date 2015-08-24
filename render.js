@@ -195,6 +195,7 @@ function camera_focus(position) {
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // Individual rendering functions
 
+var TS, TS2, TSH
 var TILE_SIZE = TS = 16
 var TILE_SIZE_TWO = TS2 = TS*2
 var TILE_SIZE_HALF = TSH = TS/2

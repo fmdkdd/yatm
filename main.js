@@ -74,6 +74,7 @@ function initWorld(cb) {
     startIntroZoom()
 }
 
+var lastCheckpoint
 var start = lastCheckpoint = point(3280, 3280)
 //start = lastCheckpoint = point(141*16, 137*16)
 
