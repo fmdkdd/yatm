@@ -302,22 +302,54 @@ function renderWorm(e, ctx) {
   ctx.restore()
 }
 
-function renderPeople(e, ctx) {
+var bubbleMargin = 2
+var bubbleTip = 2
+
+function renderMeanPeople(e, ctx) {
   var p = world.position[e]
   var s = world.sprite[e]
   var path = world.patrolPath[e]
+  var text = world.text[e]
 
   var anim = s.animations[s.current]
-  s = anim[Math.floor(frame/20 % anim.length)]
+  var speed = s.current == 'flee' ? 5: 20
+  s = anim[Math.floor(frame/speed % anim.length)]
 
   ctx.save()
   ctx.translate(p.x, p.y)
+
+  if (text.enabled) {
+    ctx.font = '5px Pixels'
+    var metrics = ctx.measureText(text.text)
+
+    // compute bubble size
+    var w = metrics.width + (bubbleMargin * 2)
+    var h = 5 * 1.1 + (bubbleMargin * 2)
+
+    ctx.beginPath()
+    ctx.moveTo(0, 0)
+    ctx.lineTo(0, -h - bubbleTip)
+    ctx.lineTo(w, -h - bubbleTip)
+    ctx.lineTo(w, -bubbleTip)
+    ctx.lineTo(bubbleTip, -bubbleTip)
+    ctx.closePath()
+
+    ctx.fillStyle = '#ffffff'
+    ctx.fill()
+
+    ctx.strokeStyle = '#a58935'
+    ctx.lineWidth = 0.3
+    ctx.stroke()
+
+    ctx.fillStyle = '#4f2f09'
+    ctx.fillText(text.text, bubbleMargin, -bubbleTip - h/4)
+  }
 
   if (!path.reverse)
     ctx.scale(-1, 1)
 
   ctx.drawImage(meanpeople_sheet,
-                s.x * TILE_SIZE, 0,
+                s.x * TILE_SIZE, s.y * TILE_SIZE2,
                 TILE_SIZE, TILE_SIZE2,
                 -8, 0, // X-axis centered to avoid shifts when flipping
                 TILE_SIZE, TILE_SIZE2)

@@ -13,7 +13,9 @@ var C_NONE         = 0,
     C_PATROL       = 1 << 8,
     C_FLY          = 1 << 9,
     C_WORM         = 1 << 10,
-    C_WINGS        = 1 << 11
+    C_WINGS        = 1 << 11,
+    C_MEANPEOPLE   = 1 << 12,
+    C_TEXT         = 1 << 13
 
 var world = {
   mask: [],
@@ -25,6 +27,7 @@ var world = {
   body: [],                     // Rigid body subject to the physics simulation
   sinusoid: [],
   patrolPath: [],
+  text: []
 }
 
 function createEntity() {
@@ -114,6 +117,12 @@ function createMunster(position) {
   Matter.World.add(engine.world, [world.body[e]])
 
   return e
+}
+
+var scary = false // XXX for testing
+function isMunsterScary() {
+  // ??? (will pprobably depend on the acquired items)
+  return scary
 }
 
 function createTile(position, sprite, tangible, properties) {
@@ -325,20 +334,20 @@ function createMeanPeople(position, type, properties) {
     C_POSITION
     | C_RENDERABLE
     | C_PATROL
+    | C_MEANPEOPLE
+    | C_TEXT
 
   world.position[e] = point(position.x, position.y)
-  world.renderable[e] = renderPeople
-
-  // Characters on each line of the sprite sheet
-  // have different appearances
-  var variant = parseInt(properties.variant) || 0
+  world.renderable[e] = renderMeanPeople
 
   world.sprite[e] = {
     animations: {
-      'walk': [{x: 0, y: variant},
-               {x: 1, y: variant}],
-      'flee': [{x: 0, y: variant},
-               {x: 1, y: variant}]
+      walk:  [{x: 0, y: 0},
+              {x: 1, y: 0}],
+      flee:  [{x: 2, y: 0},
+              {x: 3, y: 0}],
+      laugh: [{x: 4, y: 0},
+              {x: 5, y: 0}]
     },
     current: 'walk'
   }
@@ -353,7 +362,85 @@ function createMeanPeople(position, type, properties) {
     speed: speed,
   }
 
+  world.text[e] = {
+    text: 'AAAAHH!', //properties.text || '...',
+    enabled: false
+  }
+
   return e
+}
+
+var meanPeopleDistance = 60
+var meanPeopleSpeed = 0.3
+var meanPeopleFleeSpeed = 0.7
+
+var meanMessages = [
+  'HAHA!',
+  'HA. HA. HA.',
+  'You\'re cheese.',
+  'You\'re no monster.',
+  'That`\'s absurd',
+  'Ho homme, you are a cheese'
+]
+
+var scaredMessages = [
+  'HAAAAAAAAA!',
+  'You are a monster!',
+  'You are the monster!',
+  'MONSTERRRR!',
+  'RUN!',
+  'RUN RUN RUN!',
+  '#@?€!',
+  'THIS IS A NIGHTMARE',
+  'HOLY CAMEMBERT!'
+]
+
+function pickMessage(messages) {
+  return messages[Math.floor(Math.random() * messages.length)]
+}
+
+function updateMeanPeople(dt, now) {
+  var munsterPos = world.body[munster].position
+
+  for (var e of getEntities(C_MEANPEOPLE | C_PATROL | C_TEXT)) {
+
+    var p = world.position[e]
+    var d = vec_length(vec_minus(p, munsterPos))
+
+    var sprite = world.sprite[e]
+    var text = world.text[e]
+    var path = world.patrolPath[e]
+
+    // React to the proximity of the munster
+    if (d < meanPeopleDistance) {
+
+      if (!isMunsterScary() && sprite.current != 'laugh') {
+        sprite.current = 'laugh'
+        path.speed = 0
+        text.enabled = true
+        text.text = pickMessage(meanMessages)
+      }
+      else if (isMunsterScary() && sprite.current != 'flee') {
+        sprite.current = 'flee'
+        path.speed = meanPeopleFleeSpeed
+        text.enabled = true
+        text.text = pickMessage(scaredMessages)
+      }
+
+      // Face or run away from the munster depending on the state
+      path.reverse = sprite.current == 'laugh' ?
+        munsterPos.x < p.x :
+        munsterPos.x > p.x
+    }
+
+    // Go back to normal when far from the munster
+    else if (d > meanPeopleDistance && sprite.current != 'walk') {
+      sprite.current = 'walk'
+      path.speed = meanPeopleSpeed
+      text.enabled = false
+    }
+
+  }
 }
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -661,6 +748,7 @@ function loop(now) {
   controls();
   updateSinusoid(dt, now)
   updatePatrol(dt, now)
+  updateMeanPeople(dt, now)
   updateTransitions(dt, now)
   //updatePhysics(dt, now)
   checkCollisions()
