@@ -242,7 +242,7 @@ function createPowerup(position, type, properties) {
     }
     else {
       world.mask[e] |= C_HORNS
-      world.renderable[e] = renderPowerup
+      world.renderable[e] = renderHorns
 
       world.text[e] = [
         'DEMON HORNS',
@@ -838,8 +838,10 @@ function init() {
 
 
   onCollide(C_MUNSTER, C_WINGS, function(m, w) {
-    if (!acquireWings)
+    if (!acquireWings) {
       startAcquireWings(w)
+     flash(255, 255, 255, 100)
+    }
   })
 
 

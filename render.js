@@ -420,17 +420,44 @@ function renderWings(e, ctx) {
   ctx.save()
   ctx.translate(p.x, p.y)
 
+  // Gradient
+  var r = 80
+  var powerUpGradient = ctx.createRadialGradient(TS, TS, 0, TS, TS, TS2)
+  powerUpGradient.addColorStop(0, 'rgba(255,255,255,0.9)')
+  powerUpGradient.addColorStop(0.5, 'rgba(255,255,255,0.6)')
+  powerUpGradient.addColorStop(1, 'rgba(255,255,255,0)')
+  ctx.beginPath();
+  ctx.arc(r/2, r/2, r, 0, 2 * Math.PI);
+  ctx.fillStyle = powerUpGradient;
+  ctx.fill();
+
+  // Picture
   ctx.drawImage(tilesheet,
-                s.x * TILE_SIZE, s.y * TILE_SIZE,
-                TILE_SIZE * 2, TILE_SIZE,
-                0, 0,
-                TILE_SIZE * 2, TILE_SIZE)
+                s.x * TS, s.y * TS, TS2, TS2,
+                0, 16, TS2, TS2)
+
+  // Text
+  var t = world.text[e]
+  if (t) {
+    var main = t[0]
+    var sub = t[1]
+
+    ctx.fillStyle = '#4f2f09'
+
+    ctx.font = '7px Pixels'
+    var metrics = ctx.measureText(main)
+    ctx.fillText(main, -metrics.width/4, -10)
+
+    ctx.font = '5px Pixels'
+    ctx.fillText(sub, metrics.width/3, -2)
+  }
 
   ctx.restore()
 }
 
-function renderPowerup(e, ctx) {
+function renderHorns(e, ctx) {
   var p = world.position[e]
+  var s = world.sprite[e]
 
   ctx.save()
   ctx.translate(p.x, p.y)
