@@ -29,6 +29,7 @@ function build(tmxData) {
   objects = objects.concat(parseObjectLayer(tmxData, 'enemies'))
   objects = objects.concat(parseObjectLayer(tmxData, 'people'))
   objects = objects.concat(parseObjectLayer(tmxData, 'powerup'))
+  objects = objects.concat(parseObjectLayer(tmxData, 'checkpoints'))
 
   for (var o of objects) {
     var factory
@@ -39,6 +40,8 @@ function build(tmxData) {
       factory = createPowerup
     else if (o.type === 'people')
       factory = createMeanPeople
+    else if (o.type === 'checkpoint')
+      factory = createCheckpoint
     else {
       console.log('Unknown object type: ' + o.type)
       continue
@@ -89,6 +92,12 @@ function parseObjectLayer(tmxData, name) {
   var layer = tmxData.layers.filter(function(l) { return l.name == name })[0]
 
   layer.objects.forEach(function(object) {
+
+    var props = object.properties || {}
+
+    // Add width and height, can be useful
+    props.width = object.width
+    props.height = object.height
 
     objects.push({
       // World coordinates

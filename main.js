@@ -15,7 +15,8 @@ var C_NONE         = 0,
     C_WINGS        = 1 << 11,
     C_MEANPEOPLE   = 1 << 12,
     C_TEXT         = 1 << 13,
-    C_PATROL_SIN   = 1 << 14
+    C_PATROL_SIN   = 1 << 14,
+    C_CHECKPOINT   = 1 << 15
 
 var world = {
   mask: [],
@@ -67,16 +68,11 @@ function initWorld(cb) {
     startIntroZoom()
 }
 
-var start = point(3280, 3280)
+var start = lastCheckpoint = point(3280, 3280)
 //start = point(112*16, 138*16)
 
 function resetMunster() {
-  moveBody(world.body[munster], start)
-}
-
-function checkpoint() {
-  var p = world.body[munster].position
-  lastCheckpoint = point(p.x, p.y)
+  moveBody(world.body[munster], lastCheckpoint)
 }
 
 var munsterGroup = Matter.Body.nextGroup(true)
@@ -159,6 +155,41 @@ function createTile(position, sprite, tangible, properties) {
 
     Matter.World.add(engine.world, [world.body[e]])
   }
+}
+
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// Checkpoints
+
+function checkpoint(c) {
+
+  var pos
+  if (c) {
+    if (lastCheckpoint === c) return
+    var bb = world.boundingBox[c]
+    pos = point(bb.x + bb.width/2, bb.y + bb.height/2)
+  }
+  else
+    pos = world.body[munster].position
+
+  lastCheckpoint = point(pos.x, pos.y)
+  //console.info('Checkpoint ' + pos)
+}
+
+function createCheckpoint(position, type, properties) {
+  var e = createEntity()
+
+  world.mask[e] =
+    C_POSITION
+    | C_CHECKPOINT
+    | C_BOUNDING_BOX
+
+  world.boundingBox[e] = {
+    x: position.x,
+    y: position.y,
+    width: properties.width,
+    height: properties.height}
+
+  return e
 }
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -761,6 +792,10 @@ function init() {
     checkpoint()
     canDoubleJump = true
     destroyEntity(w)
+  })
+
+  onCollide(C_MUNSTER, C_CHECKPOINT, function(m, c) {
+    checkpoint(c)
   })
 }
 
