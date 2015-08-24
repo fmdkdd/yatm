@@ -62,7 +62,10 @@ function* getEntities(mask) {
 var munster
 
 function initWorld(cb) {
-  load(cb)
+  load(function() {
+    totalCoins = Array.from(getEntities(C_COIN)).length
+    cb()
+  })
 
   munster = createMunster(point(0,0))
   resetMunster()
@@ -567,7 +570,10 @@ function initPhysics() {
 
     testPair(
       function (a,b) {return a.tileType === 'death' && b.entity === munster},
-      function (a,b) {beginSpikeDeathAnim(a.entity)},
+      function (a,b) {
+        totalDeaths++
+        beginSpikeDeathAnim(a.entity)
+      },
       pair)
   })
 }
@@ -804,6 +810,7 @@ function init() {
   onCollide(C_MUNSTER, C_COIN, function(m, c) {
     sfx_play('sfx-pickup-coin')
     destroyEntity(c)
+    collectedCoins++
   })
 
 
@@ -821,6 +828,7 @@ function init() {
     dir.y = -0.4
     applyForce(world.body[m], dir)
 
+    totalDeaths++
 
     setTimeout(function() {
       resetMunster()
@@ -856,6 +864,7 @@ function updatePhysics(dt, now) {
   Matter.Engine.update(engine, dt)
 }
 
+var reqId
 var lastFrameTime
 
 function startLoop() {
@@ -863,6 +872,10 @@ function startLoop() {
   lastFrameTime = now
   Matter.Engine.run(engine);
   loop(now)
+}
+
+function stopLoop() {
+  cancelAnimationFrame(reqId)
 }
 
 function loop(now) {
@@ -880,5 +893,5 @@ function loop(now) {
 
   render()
 
-  requestAnimationFrame(loop)
+  reqId = requestAnimationFrame(loop)
 }

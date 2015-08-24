@@ -99,3 +99,48 @@ function startAcquireHorns(h) {
     bgm.play()
   }, climaxDuration)
 }
+
+var collectedCoins = 0
+var totalCoins = 0
+var totalDeaths = 0
+
+function doVictoryScreen() {
+  var length = 7000
+  camera_transition({zoom: 400}, length)
+  setTimeout(function() {
+    stopLoop()
+
+    ctx.save()
+
+    ctx.font = '45px Pixels'
+
+    // var b = {x: 45, width: 550,
+    //          y: 40, height: 270}
+
+    // ctx.beginPath()
+    // ctx.moveTo(b.x, b.y)
+    // ctx.lineTo(b.x, b.y + b.height)
+    // ctx.lineTo(b.x + b.width, b.y + b.height)
+    // ctx.lineTo(b.x + b.width, b.y)
+    // ctx.closePath()
+
+    // ctx.fillStyle = '#dbd785'
+    // ctx.fill()
+
+    // ctx.strokeStyle = '#4f2f09'
+    // ctx.lineWidth = 1
+    // ctx.stroke()
+
+    ctx.fillStyle = '#4f2f09'
+    ctx.fillText('Congratulations!', 60, 100)
+    ctx.fillText('You Are The Monster!', 60, 160)
+    ctx.fillText(collectedCoins + '/' + totalCoins, 132, 256)
+    ctx.fillText('Deaths:' + totalDeaths, 320, 256)
+
+    ctx.drawImage(bling_sheet,
+                  0, 0, TS, TS,
+                  60, 213, TS*4, TS*4)
+
+    ctx.restore()
+  }, length)
+}
