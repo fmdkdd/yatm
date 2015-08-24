@@ -830,9 +830,8 @@ function init() {
 
 
   onCollide(C_MUNSTER, C_WINGS, function(m, w) {
-    checkpoint()
-    canDoubleJump = true
-    destroyEntity(w)
+    if (!acquireWings)
+      startAcquireWings(w)
   })
 
 

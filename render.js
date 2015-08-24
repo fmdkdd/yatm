@@ -401,21 +401,16 @@ function renderMeanPeople(e, ctx) {
 
 function renderWings(e, ctx) {
   var p = world.position[e]
-  var s = world.sprite[e] || defaultSprite
-
-  // if (Array.isArray(s)) {
-  //   s = s[Math.floor(frame/5 % s.length)]
-  // }
-  console.log(1)
+  var s = {x:0, y:2}
 
   ctx.save()
   ctx.translate(p.x, p.y)
 
-  ctx.drawImage(spritesheet,
+  ctx.drawImage(tilesheet,
                 s.x * TILE_SIZE, s.y * TILE_SIZE,
-                TILE_SIZE, TILE_SIZE,
+                TILE_SIZE * 2, TILE_SIZE,
                 0, 0,
-                TILE_SIZE, TILE_SIZE)
+                TILE_SIZE * 2, TILE_SIZE)
 
   ctx.restore()
 }

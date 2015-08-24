@@ -63,3 +63,21 @@ function startIntroZoom() {
   introZoom = true
   deactivateControls(true)
 }
+
+var acquireWings = false
+
+function startAcquireWings(w) {
+  acquireWings = true
+  deactivateControls(true)
+  checkpoint()
+  canDoubleJump = true
+  bgm.pause()
+  world.mask[w] &= ~C_FLOATING
+  // sfx_play('sfx-acquire-powerup')
+
+  setTimeout(function() {
+    destroyEntity(w)
+    activateControls()
+    bgm.play()
+  }, 500)
+}
