@@ -53,7 +53,7 @@ function* getEntities(mask) {
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // World
 
-var munster;
+var munster
 
 function initWorld(cb) {
   load(cb)
@@ -69,6 +69,7 @@ var start = point(3280, 3280)
 
 function resetMunster() {
   moveBody(world.body[munster], start)
+}
 
 function checkpoint() {
   var p = world.body[munster].position
