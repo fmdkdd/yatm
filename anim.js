@@ -65,7 +65,7 @@ function startIntroZoom() {
 }
 
 var acquireWings = false
-var climaxDuration = 1000 // heh!
+var climaxDuration = 1500 // heh!
 
 function startAcquireWings(w) {
   acquireWings = true
