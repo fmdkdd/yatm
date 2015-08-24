@@ -5,6 +5,7 @@ var ctx
 var spritesheet
 var tilesheet
 var munster_sheet
+var horns_sheet
 var meanpeople_sheet
 var titleImage
 var bling_sheet
@@ -29,6 +30,7 @@ function initCanvas() {
   spritesheet = document.getElementById('spritesheet')
   tilesheet = document.getElementById('tilesheet')
   munster_sheet = document.getElementById('munster-sheet')
+  horns_sheet = document.getElementById('horns-sheet')
   meanpeople_sheet = document.getElementById('meanpeople-sheet')
   titleImage = document.getElementById('title')
   bling_sheet = document.getElementById('bling-sheet')
@@ -178,7 +180,8 @@ function camera_focus(position) {
 // Individual rendering functions
 
 var TILE_SIZE = TS = 16
-var TILE_SIZE2 = 32
+var TILE_SIZE_TWO = TS2 = TS*2
+var TILE_SIZE_HALF = TSH = TS/2
 var defaultSprite = {x: 0, y : 0}
 
 function renderTile(e, ctx) {
@@ -234,6 +237,14 @@ function renderMunster(e, ctx) {
                 TILE_SIZE, TILE_SIZE,
                 0, 0,
                 TILE_SIZE, TILE_SIZE)
+
+  if (hasHorns) {
+    ctx.drawImage(horns_sheet,
+                  s.x * TS2, s.y * TS2,
+                  TS2, TS2,
+                  -TSH, -TSH,
+                  TS2, TS2)
+  }
 
   if (DEBUG) {
     var bounds = world.body[e].parts[0].bounds
@@ -378,10 +389,10 @@ function renderMeanPeople(e, ctx) {
     ctx.scale(-1, 1)
 
   ctx.drawImage(meanpeople_sheet,
-                s.x * TILE_SIZE, s.y * TILE_SIZE2,
-                TILE_SIZE, TILE_SIZE2,
+                s.x * TILE_SIZE, s.y * TILE_SIZE_TWO,
+                TILE_SIZE, TILE_SIZE_TWO,
                 -8, 0, // X-axis centered to avoid shifts when flipping
-                TILE_SIZE, TILE_SIZE2)
+                TILE_SIZE, TILE_SIZE_TWO)
 
   ctx.restore()
 }

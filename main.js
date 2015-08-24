@@ -77,6 +77,8 @@ function resetMunster() {
 
 var munsterGroup = Matter.Body.nextGroup(true)
 
+var hasHorns = true
+
 function createMunster(position) {
   var e = createEntity()
 
