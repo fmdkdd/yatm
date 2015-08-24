@@ -793,6 +793,9 @@ function initAudio() {
 
   for (a of sfx_cache['sfx-pickup-coin'])
     a.volume = 0.15
+
+  for (a of sfx_cache['sfx-hit'])
+    a.volume = 0.15
 }
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
