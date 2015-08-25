@@ -350,7 +350,13 @@ function createWorm(position, properties) {
   world.sprite[e] = [{x:0, y:0},
                      {x:1, y:0}]
   world.sprite[e].frame = Math.floor(Math.random()%2)
-  world.sprite[e].flip = !!parseInt(properties.flip, 10) || false,
+  world.sprite[e].flip = !!parseInt(properties.flip, 10) || false
+
+  if (properties.color === 'green')
+    world.sprite[e].sheet = worm_sheet_green
+  else
+    world.sprite[e].sheet = worm_sheet
+
   world.boundingBox[e] = {x: position.x,
                           y: position.y,
                           width: 8,

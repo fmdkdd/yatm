@@ -42,6 +42,7 @@ function initCanvas() {
   bling_sheet = document.getElementById('bling-sheet')
   spike_death = document.getElementById('spike-death')
   worm_sheet = document.getElementById('worm-sheet')
+  worm_sheet_green = document.getElementById('worm-sheet-green')
   fly_sheet = document.getElementById('fly-sheet')
 
   createBackground('hills-bg', 5000, 10, 3, 3)
@@ -399,7 +400,7 @@ function renderWorm(e, ctx) {
     ctx.translate(-TS,0)
   }
 
-  ctx.drawImage(worm_sheet,
+  ctx.drawImage(world.sprite[e].sheet,
                 s.x * TILE_SIZE, s.y * TILE_SIZE,
                 TILE_SIZE, TILE_SIZE,
                 0, 0,
