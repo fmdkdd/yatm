@@ -121,11 +121,11 @@ function initWorld(cb) {
     loadGame()
     saveInterval = setInterval(saveGame, 10000) // 10 seconds?
 
+    if (doIntroZoom)
+      startIntroZoom()
+
     cb()
   })
-
-  if (doIntroZoom)
-    startIntroZoom()
 }
 
 function resetMunster() {

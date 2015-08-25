@@ -50,7 +50,7 @@ function renderSpikeDeathAnim(e, ctx) {
   ctx.restore()
 }
 
-var doIntroZoom = false
+var doIntroZoom = true
 var introZoom = false
 
 function startIntroZoom() {
