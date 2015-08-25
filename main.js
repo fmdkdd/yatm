@@ -94,6 +94,7 @@ function loadGame() {
   lastCheckpoint.x = window.localStorage.getItem('checkpoint_x') || start.x
   lastCheckpoint.y = window.localStorage.getItem('checkpoint_y') || start.y
   start = lastCheckpoint
+  resetMunster()
 
   totalDeaths = parseInt(window.localStorage.getItem('totalDeaths')) || 0
 
