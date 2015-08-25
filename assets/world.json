@@ -6,7 +6,7 @@
          "name":"decor2",
          "opacity":1,
          "type":"tilelayer",
-         "visible":false,
+         "visible":true,
          "width":400,
          "x":0,
          "y":0
@@ -1400,6 +1400,36 @@
                  "width":33.6667,
                  "x":4572.84,
                  "y":3105.75
+                }, 
+                {
+                 "height":126,
+                 "id":119,
+                 "name":"",
+                 "properties":
+                    {
+
+                    },
+                 "rotation":0,
+                 "type":"checkpoint",
+                 "visible":true,
+                 "width":33.6667,
+                 "x":5165.84,
+                 "y":3009.83
+                }, 
+                {
+                 "height":100,
+                 "id":120,
+                 "name":"",
+                 "properties":
+                    {
+
+                    },
+                 "rotation":0,
+                 "type":"checkpoint",
+                 "visible":true,
+                 "width":33.6667,
+                 "x":1672.17,
+                 "y":1819
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -1408,7 +1438,7 @@
          "x":0,
          "y":0
         }],
- "nextobjectid":119,
+ "nextobjectid":121,
  "orientation":"orthogonal",
  "properties":
     {
@@ -1460,7 +1490,7 @@
                  "height":"6",
                  "offsetY":"4",
                  "type":"death",
-                 "width":"12"
+                 "width":"8"
                 },
              "78":
                 {
