@@ -82,6 +82,10 @@ function loadGame() {
   start = lastCheckpoint
 }
 
+function clearGame() {
+  localStorage.clear()
+}
+
 function initWorld(cb) {
   load(function() {
     totalCoins = Array.from(getEntities(C_COIN)).length

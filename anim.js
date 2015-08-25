@@ -105,6 +105,10 @@ var totalCoins = 0
 var totalDeaths = 0
 
 function doVictoryScreen() {
+
+  // CLEAR THE LOCALSTORAGE TO PLAY ANOTHER GAME
+  clearGame()
+
   var length = 7000
   camera_transition({zoom: 400}, length)
   setTimeout(function() {
