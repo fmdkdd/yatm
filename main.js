@@ -177,7 +177,7 @@ function createMunster(position) {
 var hasHorns = false
 
 function isMunsterScary() {
-  return hasHorns
+  return canDoubleJump
 }
 
 function createTile(position, sprite, tangible, properties) {
