@@ -70,7 +70,6 @@ var climaxDuration = 1500 // heh!
 function startAcquireWings(w) {
   acquireWings = true
   deactivateControls(true)
-  checkpoint()
   canDoubleJump = true
   flash(255, 255, 255, 100)
   bgm.pause()
@@ -88,7 +87,6 @@ var acquireHorns = false
 function startAcquireHorns(h) {
   acquireHorns = true
   deactivateControls(true)
-  checkpoint()
   hasHorns = true
   flash(255, 255, 255, 100)
   bgm.pause()

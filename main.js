@@ -61,11 +61,36 @@ function* getEntities(mask) {
 
 var munster
 
+var lastCheckpoint
+var start = lastCheckpoint = point(3280, 3280)
+//start = lastCheckpoint = point(141*16, 137*16)
+
+function saveGame() {
+  window.localStorage.setItem('horns', hasHorns)
+  window.localStorage.setItem('wings', canDoubleJump)
+
+  window.localStorage.setItem('checkpoint_x', lastCheckpoint.x)
+  window.localStorage.setItem('checkpoint_y', lastCheckpoint.y)
+}
+
+function loadGame() {
+  hasHorns = window.localStorage.getItem('horns') === 'true' || false
+  canDoubleJump = window.localStorage.getItem('wings') === 'true' || false
+
+  lastCheckpoint.x = window.localStorage.getItem('checkpoint_x') || start.x
+  lastCheckpoint.y = window.localStorage.getItem('checkpoint_y') || start.y
+  start = lastCheckpoint
+}
+
 function initWorld(cb) {
   load(function() {
     totalCoins = Array.from(getEntities(C_COIN)).length
+
     cb()
   })
+
+  loadGame()
+  setInterval(saveGame, 10000) // 10 seconds?
 
   munster = createMunster(point(0,0))
   resetMunster()
@@ -73,10 +98,6 @@ function initWorld(cb) {
   if (doIntroZoom)
     startIntroZoom()
 }
-
-var lastCheckpoint
-var start = lastCheckpoint = point(3280, 3280)
-//start = lastCheckpoint = point(141*16, 137*16)
 
 function resetMunster() {
   moveBody(world.body[munster], lastCheckpoint)
@@ -427,7 +448,7 @@ function updatePatrol(dt, now) {
       b.x = p.x - 4
       b.y = p.y + 3
     }
-    //if (e==6409)console.log(progress)
+
     if (progress > 0.99)
       path.reverse = !path.reverse
   }
