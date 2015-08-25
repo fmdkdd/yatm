@@ -108,6 +108,7 @@ var totalDeaths = 0
 function doVictoryScreen() {
 
   // CLEAR THE LOCALSTORAGE TO PLAY ANOTHER GAME
+  clearInterval(saveInterval)
   clearGame()
 
   var length = 7000

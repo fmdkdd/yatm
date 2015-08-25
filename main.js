@@ -70,6 +70,7 @@ var lastCheckpoint
 var start = lastCheckpoint = point(3280, 3280)
 //start = lastCheckpoint = point(141*16, 137*16)
 
+var saveinterval
 function saveGame() {
   window.localStorage.setItem('horns', hasHorns)
   window.localStorage.setItem('wings', canDoubleJump)
@@ -117,7 +118,7 @@ function initWorld(cb) {
     resetMunster()
 
     loadGame()
-    setInterval(saveGame, 10000) // 10 seconds?
+    saveInterval = setInterval(saveGame, 10000) // 10 seconds?
 
     cb()
   })
