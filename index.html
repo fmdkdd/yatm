@@ -12,9 +12,11 @@
       }
       * { margin: 0; padding: 0; }
       img { display: none; }
-      html { background-color: #424244 }
+      html { background-color: #424244; color: #efefef }
       body { width: 700px; margin: auto; }
       #canvas { margin-top: 50px; border: 1px solid black; }
+      #vote { margin-top: 1em; font-size: 20px }
+      #vote a { color: #88f }
     </style>
 
     <script src="libs/browser-polyfill.min.js"></script>
@@ -29,6 +31,7 @@
   </head>
   <body>
     <canvas id="canvas"></canvas>
+      <p id="vote">Made for Ludum Dare 33.  <a href="http://ludumdare.com/compo/ludum-dare-33/?action=preview&uid=58042">Vote for us!</a></p>
 
     <!-- Assets -->
     <img id="munster-sheet" src="assets/munster.png">
