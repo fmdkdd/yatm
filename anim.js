@@ -101,6 +101,7 @@ function startAcquireHorns(h) {
 }
 
 var collectedCoins = 0
+var collectedCoinIds = []
 var totalCoins = 0
 var totalDeaths = 0
 

@@ -45,6 +45,11 @@ function destroyEntity(e) {
   world.mask[e] = C_NONE
 }
 
+function destroyAllEntities(mask) {
+  for (var e of getEntities(mask))
+    destroyEntity(e)
+}
+
 function testEntity(e, mask) {
   return (world.mask[e] & mask) === mask
 }
@@ -71,6 +76,9 @@ function saveGame() {
 
   window.localStorage.setItem('checkpoint_x', lastCheckpoint.x)
   window.localStorage.setItem('checkpoint_y', lastCheckpoint.y)
+
+  window.localStorage.setItem('totalDeaths', totalDeaths)
+  window.localStorage.setItem('coins', JSON.stringify(collectedCoinIds))
 }
 
 function loadGame() {
@@ -80,6 +88,16 @@ function loadGame() {
   lastCheckpoint.x = window.localStorage.getItem('checkpoint_x') || start.x
   lastCheckpoint.y = window.localStorage.getItem('checkpoint_y') || start.y
   start = lastCheckpoint
+
+  totalDeaths = parseInt(window.localStorage.getItem('totalDeaths')) || 0
+
+  collectedCoinIds = JSON.parse(window.localStorage.getItem('coins')) || []
+  collectedCoins = collectedCoinIds.length
+
+  // Remove collected coins from the world
+  for (var coin of getEntities(C_COIN))
+    if (collectedCoinIds.contains(coin))
+      destroyEntity(coin)
 }
 
 function clearGame() {
@@ -849,6 +867,7 @@ function init() {
     sfx_play('sfx-pickup-coin')
     destroyEntity(c)
     collectedCoins++
+    collectedCoinIds.push(c)
   })
 
 
