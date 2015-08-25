@@ -83,7 +83,12 @@ function saveGame() {
 
 function loadGame() {
   hasHorns = window.localStorage.getItem('horns') === 'true' || false
+  if (hasHorns)
+    destroyAllEntities(C_HORNS)
+
   canDoubleJump = window.localStorage.getItem('wings') === 'true' || false
+  if (canDoubleJump)
+    destroyAllEntities(C_WINGS)
 
   lastCheckpoint.x = window.localStorage.getItem('checkpoint_x') || start.x
   lastCheckpoint.y = window.localStorage.getItem('checkpoint_y') || start.y
@@ -96,7 +101,7 @@ function loadGame() {
 
   // Remove collected coins from the world
   for (var coin of getEntities(C_COIN))
-    if (collectedCoinIds.contains(coin))
+    if (collectedCoinIds.indexOf(coin) > -1)
       destroyEntity(coin)
 }
 
@@ -108,14 +113,14 @@ function initWorld(cb) {
   load(function() {
     totalCoins = Array.from(getEntities(C_COIN)).length
 
+    munster = createMunster(point(0,0))
+    resetMunster()
+
+    loadGame()
+    setInterval(saveGame, 10000) // 10 seconds?
+
     cb()
   })
-
-  loadGame()
-  setInterval(saveGame, 10000) // 10 seconds?
-
-  munster = createMunster(point(0,0))
-  resetMunster()
 
   if (doIntroZoom)
     startIntroZoom()
@@ -608,9 +613,9 @@ function initPhysics() {
   Matter.Events.on(engine, 'collisionStart', function touchedGround(event) {
     if (jumping === false)
       return
-
     if(event.pairs.some(function(pair) {
-      return pair.bodyA.entity === munster && vec_unit(pair.collision.normal).y < -0.95
+      return pair.bodyA.entity === munster && vec_unit(pair.collision.normal).y < -0.95 ||
+             pair.bodyB.entity === munster && vec_unit(pair.collision.normal).y > 0.95
     }))
       jumping = doubleJumping = false
   })
@@ -883,7 +888,7 @@ function init() {
     // Multiple collisions are handled once
     if (!controlsActivated())
       return
-console.log(1)
+
     flash(255, 255, 255, 5)
     sfx_play('sfx-hit')
     deactivateControls(false)
