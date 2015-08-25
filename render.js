@@ -14,6 +14,7 @@ var titleImage
 var bling_sheet
 var spike_death
 var worm_sheet
+var worm_sheet_green
 var fly_sheet
 
 function initCanvas() {

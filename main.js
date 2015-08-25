@@ -111,6 +111,8 @@ function clearGame() {
   localStorage.clear()
 }
 
+var saveInterval
+
 function initWorld(cb) {
   load(function() {
     totalCoins = Array.from(getEntities(C_COIN)).length
