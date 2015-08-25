@@ -105,7 +105,10 @@ var collectedCoinIds = []
 var totalCoins = 0
 var totalDeaths = 0
 
+var victory = false
+
 function doVictoryScreen() {
+  victory = true
 
   // CLEAR THE LOCALSTORAGE TO PLAY ANOTHER GAME
   clearInterval(saveInterval)

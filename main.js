@@ -177,7 +177,7 @@ function createMunster(position) {
 var hasHorns = false
 
 function isMunsterScary() {
-  return canDoubleJump
+  return hasHorns
 }
 
 function createTile(position, sprite, tangible, properties) {
@@ -556,6 +556,8 @@ function pickMessage(messages) {
   return messages[Math.floor(Math.random() * messages.length)]
 }
 
+var victoryScreenComing = false
+
 function updateMeanPeople(dt, now) {
   var munsterPos = world.body[munster].position
 
@@ -571,7 +573,7 @@ function updateMeanPeople(dt, now) {
     // React to the proximity of the munster
     if (d < meanPeopleDistance) {
 
-      if (!isMunsterScary() && sprite.current != 'laugh') {
+      if (!isMunsterScary() && sprite.current != 'laugh' && !victoryScreenComing) {
         sprite.current = 'laugh'
         path.speed = 0
         text.enabled = true
@@ -582,6 +584,11 @@ function updateMeanPeople(dt, now) {
         path.speed = meanPeopleFleeSpeed
         text.enabled = true
         text.text = pickMessage(scaredMessages)
+
+        if (victory === false) {
+          victoryScreenComing = true
+          setTimeout(doVictoryScreen, 10000)
+        }
       }
 
       // Face or run away from the munster depending on the state
@@ -591,7 +598,7 @@ function updateMeanPeople(dt, now) {
     }
 
     // Go back to normal when far from the munster
-    else if (d > meanPeopleDistance && sprite.current != 'walk') {
+    else if (d > meanPeopleDistance && sprite.current != 'walk' && !victoryScreenComing) {
       sprite.current = 'walk'
       path.speed = meanPeopleSpeed
       text.enabled = false
