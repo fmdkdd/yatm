@@ -814,6 +814,10 @@ function activateControls() {
   Matter.Sleeping.set(world.body[munster], false)
 }
 
+function controlsActivated() {
+  return testEntity(munster, C_INPUT)
+}
+
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // Audio
 
@@ -876,6 +880,10 @@ function init() {
     // TODO: 2. ???
     // TODO: 3. PROFIT!
 
+    // Multiple collisions are handled once
+    if (!controlsActivated())
+      return
+console.log(1)
     flash(255, 255, 255, 5)
     sfx_play('sfx-hit')
     deactivateControls(false)
