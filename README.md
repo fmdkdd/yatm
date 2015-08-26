@@ -4,7 +4,7 @@ You are not the münster, but not a monster.  Not yet, at least...
 
 A game made during the [Ludum Dare 33 Jam][].  [Try it!][].
 
-By @merwaaan and myself, with input and support from @Marie-Donnie.
+By [merwaaan][] and myself, with input and support from [Marie-Donnie][].
 
 ## Controls
 
@@ -19,8 +19,10 @@ By @merwaaan and myself, with input and support from @Marie-Donnie.
 - [Tiled][] for placing tiles and objects
 
 [Ludum Dare 33 Jam]: http://ludumdare.com/compo/ludum-dare-33/?action=preview&uid=58042
-[Try it!]: http://fmdkdd.github.io/yatm/
+[Try it!]: https://fmdkdd.github.io/yatm/
 [Aseprite]: http://www.aseprite.org/
 [Sunvox]: http://www.warmplace.ru/soft/sunvox/
 [Sfxr]: http://www.drpetter.se/project_sfxr.html
 [Tiled]: http://www.mapeditor.org/
+[merwaaan]: https://github.com/merwaaan
+[Marie-Donnie]: https://github.com/Marie-Donnie
