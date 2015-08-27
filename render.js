@@ -130,14 +130,16 @@ function render() {
   ctx.scale(camera.zoom, camera.zoom)
   ctx.translate(camera.x, camera.y)
 
-  for (var e of getEntities(C_RENDERABLE)) {
-    if (e === munster) continue // Draw munster on top of every renderable
+  for (var e = 0, n = world.mask.length; e < n; ++e) {
+    if (world.mask[e] & C_RENDERABLE) {
+      if (e === munster) continue // Draw munster on top of every renderable
 
-    var r = world.renderable[e]
-    p = world.position[e]
-    if (do_boxes_collide(screen, {
-      x: p.x, y: p.y, width: TS2, height: TS2})) {
-      r(e, ctx)
+      var r = world.renderable[e]
+      p = world.position[e]
+      if (do_boxes_collide(screen, {
+        x: p.x, y: p.y, width: TS2, height: TS2})) {
+        r(e, ctx)
+      }
     }
   }
 

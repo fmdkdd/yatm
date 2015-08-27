@@ -328,13 +328,15 @@ function createPowerup(position, type, properties) {
 }
 
 function updateFloating(dt, now) {
-  for (var e of getEntities(C_FLOATING)) {
-    var f = world.floating[e]
+  for (var e = 0, n = world.mask.length; e < n; ++e) {
+    if (world.mask[e] & C_FLOATING) {
+      var f = world.floating[e]
 
-    world.position[e] = point(f.initialPos.x,
-                              f.initialPos.y + Math.sin(now * f.speed) * f.amplitude)
+      world.position[e] = point(f.initialPos.x,
+                                f.initialPos.y + Math.sin(now * f.speed) * f.amplitude)
 
-    world.boundingBox[e].y = world.position[e].y
+      world.boundingBox[e].y = world.position[e].y
+    }
   }
 }
 
@@ -435,53 +437,57 @@ function createWorm(position, properties) {
 }
 
 function updatePatrol(dt, now) {
-  for (var e of getEntities(C_PATROL)) {
-    var path = world.patrolPath[e]
-    var p = world.position[e]
+  for (var e = 0, n = world.mask.length; e < n; ++e) {
+    if (world.mask[e] & C_PATROL) {
+      var path = world.patrolPath[e]
+      var p = world.position[e]
 
-    var start = path.reverse ? path.end : path.start
-    var end = path.reverse ? path.start : path.end
+      var start = path.reverse ? path.end : path.start
+      var end = path.reverse ? path.start : path.end
 
-    var v = vec_unit(vec_minus(end, start))
-    v = vec_mult(v, path.speed)
+      var v = vec_unit(vec_minus(end, start))
+      v = vec_mult(v, path.speed)
 
-    p.x = clamp(p.x + v.x, start.x, end.x)
-    p.y = clamp(p.y + v.y, start.y, end.y)
+      p.x = clamp(p.x + v.x, start.x, end.x)
+      p.y = clamp(p.y + v.y, start.y, end.y)
 
-    if (world.mask[e] & C_BOUNDING_BOX) {
-      var b = world.boundingBox[e]
-      b.x = p.x + 4
-      b.y = p.y + 11
+      if (world.mask[e] & C_BOUNDING_BOX) {
+        var b = world.boundingBox[e]
+        b.x = p.x + 4
+        b.y = p.y + 11
+      }
+
+      if (vec_length(vec_minus(p, end)) <= 1)
+        path.reverse = !path.reverse
     }
-
-    if (vec_length(vec_minus(p, end)) <= 1)
-      path.reverse = !path.reverse
   }
 
   // Similar to C_PATROL, with vertical modulation
-  for (var e of getEntities(C_PATROL_SIN)) {
-    var path = world.patrolPath[e]
-    var p = world.position[e]
+  for (var e = 0, n = world.mask.length; e < n; ++e) {
+    if (world.mask[e] & C_PATROL_SIN) {
+      var path = world.patrolPath[e]
+      var p = world.position[e]
 
-    var start = path.reverse ? path.end : path.start
-    var end = path.reverse ? path.start : path.end
+      var start = path.reverse ? path.end : path.start
+      var end = path.reverse ? path.start : path.end
 
-    var v = vec_unit(vec_minus(end, start))
-    v = vec_mult(v, path.speed)
+      var v = vec_unit(vec_minus(end, start))
+      v = vec_mult(v, path.speed)
 
-    p.x = clamp(p.x + v.x, start.x, end.x)
+      p.x = clamp(p.x + v.x, start.x, end.x)
 
-    var progress = vec_length(vec_minus(p, start)) / vec_length(vec_minus(end, start))
-    p.y = path.start.y + Math.sin(now*0.01) * path.amplitude
+      var progress = vec_length(vec_minus(p, start)) / vec_length(vec_minus(end, start))
+      p.y = path.start.y + Math.sin(now*0.01) * path.amplitude
 
-    if (world.mask[e] & C_BOUNDING_BOX) {
-      var b = world.boundingBox[e]
-      b.x = p.x - 4
-      b.y = p.y + 3
+      if (world.mask[e] & C_BOUNDING_BOX) {
+        var b = world.boundingBox[e]
+        b.x = p.x - 4
+        b.y = p.y + 3
+      }
+
+      if (progress > 0.99)
+        path.reverse = !path.reverse
     }
-
-    if (progress > 0.99)
-      path.reverse = !path.reverse
   }
 }
 
