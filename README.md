@@ -2,6 +2,8 @@
 
 You are not the münster, but not a monster.  Not yet, at least...
 
+![Screenshot](screen.jpg)
+
 A game made during the [Ludum Dare 33 Jam][].  [Try it!][].
 
 By [merwaaan][] and myself, with input and support from [Marie-Donnie][].
