@@ -1,6 +1,6 @@
 # You Are The Münster
 
-You are not the münster, but not a monster.  Not yet, at least...
+You are the münster, but not a monster.  Not yet, at least...
 
 ![Screenshot](screen.jpg)
 
