@@ -21,7 +21,7 @@ By [merwaaan][] and myself, with input and support from [Marie-Donnie][].
 - [Tiled][] for placing tiles and objects
 
 [Ludum Dare 33 Jam]: http://ludumdare.com/compo/ludum-dare-33/?action=preview&uid=58042
-[Try it!]: https://fmdkdd.github.io/yatm/
+[Try it!]: http://0xc0de.fr/yatm/
 [Aseprite]: http://www.aseprite.org/
 [Sunvox]: http://www.warmplace.ru/soft/sunvox/
 [Sfxr]: http://www.drpetter.se/project_sfxr.html
